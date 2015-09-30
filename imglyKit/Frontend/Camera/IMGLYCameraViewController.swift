@@ -138,14 +138,17 @@ public class IMGLYCameraViewController: UIViewController {
     public private(set) var actionButton: UIControl?
     
     public private(set) lazy var filterSelectionButton: UIButton = {
-        let bundle = NSBundle(forClass: self.dynamicType)
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(named: "show_filter", inBundle: bundle, compatibleWithTraitCollection: nil), forState: .Normal)
-        button.layer.cornerRadius = 3
-        button.clipsToBounds = true
-        button.addTarget(self, action: "toggleFilters:", forControlEvents: .TouchUpInside)
-        button.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+        button.setTitle("Cancel", forState: .Normal)
+        button.setTitle("Cancel", forState: .Highlighted)
+        button.sizeToFit()
+        button.addTarget(self, action: "toggleCamera:", forControlEvents: .TouchUpInside)
+//        button.addTarget(self, action: "toggleFilters:", forControlEvents: .TouchUpInside)
+//        button.setImage(UIImage(named: "show_filter", inBundle: bundle, compatibleWithTraitCollection: nil), forState: .Normal)
+//        button.layer.cornerRadius = 3
+//        button.clipsToBounds = true
+//        button.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
         return button
         }()
     
@@ -442,7 +445,7 @@ public class IMGLYCameraViewController: UIViewController {
         bottomControlsView.addConstraint(NSLayoutConstraint(item: bottomControlsView, attribute: .Bottom, relatedBy: .Equal, toItem: actionButtonContainer, attribute: .Bottom, multiplier: 1, constant: 10))
         
         // FilterSelectionButton
-        filterSelectionButton.addConstraint(NSLayoutConstraint(item: filterSelectionButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: BottomControlSize.width))
+        filterSelectionButton.addConstraint(NSLayoutConstraint(item: filterSelectionButton, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: BottomControlSize.width + 15))
         filterSelectionButton.addConstraint(NSLayoutConstraint(item: filterSelectionButton, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: BottomControlSize.height))
         bottomControlsView.addConstraint(NSLayoutConstraint(item: filterSelectionButton, attribute: .CenterY, relatedBy: .Equal, toItem: actionButtonContainer, attribute: .CenterY, multiplier: 1, constant: 0))
         bottomControlsView.addConstraint(NSLayoutConstraint(item: bottomControlsView, attribute: .Right, relatedBy: .Equal, toItem: filterSelectionButton, attribute: .Right, multiplier: 1, constant: 20))
@@ -732,6 +735,12 @@ public class IMGLYCameraViewController: UIViewController {
             if let filterSelectionViewConstraint = filterSelectionViewConstraint where filterSelectionViewConstraint.constant != 0 {
                 toggleFilters(filterSelectionButton)
             }
+        }
+    }
+    
+    public func toggleCamera(sender : UIButton?){
+        if self.presentingViewController != nil{
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     
