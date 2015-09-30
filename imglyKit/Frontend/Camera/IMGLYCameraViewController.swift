@@ -15,7 +15,7 @@ let InitialFilterIntensity = Float(0.75)
 private let ShowFilterIntensitySliderInterval = NSTimeInterval(2)
 private let FilterSelectionViewHeight = 100
 private let BottomControlSize = CGSize(width: 47, height: 47)
-public typealias IMGLYCameraCompletionBlock = (UIImage?, NSURL?) -> (Void)
+public typealias IMGLYCameraCompletionBlock = (UIImage?, NSURL?, [String : AnyObject]?) -> (Void)
 
 public class IMGLYCameraViewController: UIViewController {
     
@@ -713,7 +713,7 @@ public class IMGLYCameraViewController: UIViewController {
             if error == nil {
                 dispatch_async(dispatch_get_main_queue()) {
                     if let completionBlock = self.completionBlock {
-                        completionBlock(image, nil)
+                        completionBlock(image, nil, nil)
                     } else {
                         if let image = image {
                             self.showEditorNavigationControllerWithImage(image)
@@ -1028,7 +1028,7 @@ extension IMGLYCameraViewController: IMGLYCameraControllerDelegate {
         dispatch_async(dispatch_get_main_queue()) {
             self.updateUIForStoppedRecording()
             if let completionBlock = self.completionBlock {
-                completionBlock(nil, fileURL)
+                completionBlock(nil, fileURL, nil)
             } else {
                 self.saveMovieWithMovieURLToAssets(fileURL)
             }
@@ -1056,7 +1056,7 @@ extension IMGLYCameraViewController: UIImagePickerControllerDelegate, UINavigati
         
         self.dismissViewControllerAnimated(true, completion: {
             if let completionBlock = self.completionBlock {
-                completionBlock(image, nil)
+                completionBlock(image, nil, info)
             } else {
                 if let image = image {
                     self.showEditorNavigationControllerWithImage(image)
