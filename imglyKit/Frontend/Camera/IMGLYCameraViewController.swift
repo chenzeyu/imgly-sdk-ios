@@ -741,6 +741,8 @@ public class IMGLYCameraViewController: UIViewController {
     public func toggleCamera(sender : UIButton?){
         if self.presentingViewController != nil{
             self.dismissViewControllerAnimated(true, completion: nil)
+        } else {
+            self.navigationController?.popViewControllerAnimated(true)
         }
     }
     

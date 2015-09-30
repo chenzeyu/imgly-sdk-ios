@@ -127,8 +127,6 @@ public class IMGLYMainEditorViewController: IMGLYEditorViewController {
         navigationItem.title = NSLocalizedString("main-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelTapped:")
         
-//        navigationController?.delegate = self
-        
         fixedFilterStack.effectFilter = IMGLYInstanceFactory.effectFilterWithType(initialFilterType)
         fixedFilterStack.effectFilter.inputIntensity = initialFilterIntensity
         
@@ -286,11 +284,5 @@ extension IMGLYMainEditorViewController: UICollectionViewDelegate {
         if actionButton.selectedImage != nil && actionButton.showSelection != nil {
             collectionView.reloadItemsAtIndexPaths([indexPath])
         }
-    }
-}
-
-extension IMGLYMainEditorViewController: UINavigationControllerDelegate {
-    public func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return IMGLYNavigationAnimationController()
     }
 }
