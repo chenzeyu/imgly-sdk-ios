@@ -48,7 +48,7 @@ public class IMGLYCameraViewController: UIViewController {
         self.squareMode = false
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required public init?(coder aDecoder: NSCoder) {
         recordingModes = [.Photo, .Video]
         currentRecordingMode = recordingModes.first!
@@ -63,7 +63,7 @@ public class IMGLYCameraViewController: UIViewController {
         view.backgroundColor = UIColor.clearColor()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
+        }()
     
     public private(set) lazy var topControlsView: UIView = {
         let view = UIView()
@@ -124,7 +124,7 @@ public class IMGLYCameraViewController: UIViewController {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
-    }()
+        }()
     
     public private(set) lazy var recordingTimeLabel: UILabel = {
         let label = UILabel()
@@ -133,7 +133,7 @@ public class IMGLYCameraViewController: UIViewController {
         label.textColor = UIColor.whiteColor()
         label.text = "00:00"
         return label
-    }()
+        }()
     
     public private(set) var actionButton: UIControl?
     
@@ -144,11 +144,11 @@ public class IMGLYCameraViewController: UIViewController {
         button.setTitle("Cancel", forState: .Highlighted)
         button.sizeToFit()
         button.addTarget(self, action: "toggleCamera:", forControlEvents: .TouchUpInside)
-//        button.addTarget(self, action: "toggleFilters:", forControlEvents: .TouchUpInside)
-//        button.setImage(UIImage(named: "show_filter", inBundle: bundle, compatibleWithTraitCollection: nil), forState: .Normal)
-//        button.layer.cornerRadius = 3
-//        button.clipsToBounds = true
-//        button.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
+        //        button.addTarget(self, action: "toggleFilters:", forControlEvents: .TouchUpInside)
+        //        button.setImage(UIImage(named: "show_filter", inBundle: bundle, compatibleWithTraitCollection: nil), forState: .Normal)
+        //        button.layer.cornerRadius = 3
+        //        button.clipsToBounds = true
+        //        button.transform = CGAffineTransformMakeRotation(CGFloat(M_PI))
         return button
         }()
     
@@ -170,18 +170,18 @@ public class IMGLYCameraViewController: UIViewController {
         slider.setThumbImage(sliderThumbImage, forState: .Highlighted)
         
         return slider
-    }()
+        }()
     
     public private(set) lazy var swipeRightGestureRecognizer: UISwipeGestureRecognizer = {
         let recognizer = UISwipeGestureRecognizer(target: self, action: "toggleMode:")
         return recognizer
-    }()
+        }()
     
     public private(set) lazy var swipeLeftGestureRecognizer: UISwipeGestureRecognizer = {
         let recognizer = UISwipeGestureRecognizer(target: self, action: "toggleMode:")
         recognizer.direction = .Left
         return recognizer
-    }()
+        }()
     
     public let recordingModes: [IMGLYRecordingMode]
     private var recordingModeSelectionButtons = [UIButton]()
@@ -195,7 +195,7 @@ public class IMGLYCameraViewController: UIViewController {
             self.cameraController?.switchToRecordingMode(self.currentRecordingMode)
         }
     }
-
+    
     public var squareMode: Bool {
         didSet {
             self.cameraController?.squareMode = squareMode
@@ -232,7 +232,7 @@ public class IMGLYCameraViewController: UIViewController {
             for recordingModeSelectionButton in recordingModeSelectionButtons {
                 recordingModeSelectionButton.enabled = buttonsEnabled
             }
-
+            
             swipeRightGestureRecognizer.enabled = buttonsEnabled
             swipeLeftGestureRecognizer.enabled = buttonsEnabled
             filterSelectionController.view.userInteractionEnabled = buttonsEnabled
@@ -247,7 +247,7 @@ public class IMGLYCameraViewController: UIViewController {
     private var cameraPreviewContainerBottomConstraint: NSLayoutConstraint?
     
     // MARK: - UIViewController
-
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.blackColor()
@@ -316,7 +316,7 @@ public class IMGLYCameraViewController: UIViewController {
     public override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
         return .Portrait
     }
-
+    
     // MARK: - Configuration
     
     private func configureRecordingModeSwitching() {
@@ -394,7 +394,7 @@ public class IMGLYCameraViewController: UIViewController {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[bottomControlsView]|", options: [], metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[filterSelectionView]|", options: [], metrics: nil, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-(==filterIntensitySliderLeftRightMargin)-[filterIntensitySlider]-(==filterIntensitySliderLeftRightMargin)-|", options: [], metrics: metrics, views: views))
-
+        
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[topLayoutGuide][topControlsView(==topControlsViewHeight)]", options: [], metrics: metrics, views: views))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[bottomControlsView][filterSelectionView(==filterSelectionViewHeight)]", options: [], metrics: metrics, views: views))
         view.addConstraint(NSLayoutConstraint(item: filterIntensitySlider, attribute: .Bottom, relatedBy: .Equal, toItem: bottomControlsView, attribute: .Top, multiplier: 1, constant: -20))
@@ -558,7 +558,7 @@ public class IMGLYCameraViewController: UIViewController {
     private func updateFlashButton() {
         if let cameraController = cameraController {
             let bundle = NSBundle(forClass: self.dynamicType)
-
+            
             if currentRecordingMode == .Photo {
                 flashButton.hidden = !cameraController.flashAvailable
                 
@@ -739,10 +739,10 @@ public class IMGLYCameraViewController: UIViewController {
     }
     
     public func toggleCamera(sender : UIButton?){
-        if self.presentingViewController != nil{
-            self.dismissViewControllerAnimated(true, completion: nil)
-        } else {
+        if self.navigationController != nil{
             self.navigationController?.popViewControllerAnimated(true)
+        } else{
+            self.dismissViewControllerAnimated(true, completion: nil)
         }
     }
     
@@ -795,7 +795,7 @@ public class IMGLYCameraViewController: UIViewController {
     @objc private func image(image: UIImage, didFinishSavingWithError: NSError, contextInfo:UnsafePointer<Void>) {
         setLastImageFromRollAsPreview()
     }
-
+    
 }
 
 extension IMGLYCameraViewController: IMGLYCameraControllerDelegate {
@@ -822,7 +822,7 @@ extension IMGLYCameraViewController: IMGLYCameraControllerDelegate {
     public func cameraControllerDidFailAuthorization(cameraController: IMGLYCameraController) {
         dispatch_async(dispatch_get_main_queue()) {
             let bundle = NSBundle(forClass: self.dynamicType)
-
+            
             let alertController = UIAlertController(title: NSLocalizedString("camera-view-controller.camera-no-permission.title", tableName: nil, bundle: bundle, value: "", comment: ""), message: NSLocalizedString("camera-view-controller.camera-no-permission.message", tableName: nil, bundle: bundle, value: "", comment: ""), preferredStyle: .Alert)
             
             let settingsAction = UIAlertAction(title: NSLocalizedString("camera-view-controller.camera-no-permission.settings", tableName: nil, bundle: bundle, value: "", comment: ""), style: .Default) { _ in
@@ -1064,7 +1064,7 @@ extension IMGLYCameraViewController: UIImagePickerControllerDelegate, UINavigati
             }
         })
     }
-
+    
     public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
