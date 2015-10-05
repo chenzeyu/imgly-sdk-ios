@@ -263,7 +263,7 @@ public class IMGLYCameraViewController: UIViewController {
     
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         if let filterSelectionViewConstraint = filterSelectionViewConstraint where filterSelectionViewConstraint.constant != 0 {
             filterSelectionController.beginAppearanceTransition(true, animated: animated)
         }
