@@ -177,7 +177,8 @@ public class IMGLYMainEditorViewController: IMGLYEditorViewController {
                 viewController.lowResolutionImage = lowResolutionImage
                 viewController.previewImageView.image = previewImageView.image
                 viewController.completionHandler = subEditorDidComplete
-                
+                viewController.extendedLayoutIncludesOpaqueBars = true
+                viewController.automaticallyAdjustsScrollViewInsets = false
                 showViewController(viewController, sender: self)
             }
         }
