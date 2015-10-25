@@ -269,7 +269,7 @@ public class IMGLYCameraViewController: UIViewController {
         }
         self.extendedLayoutIncludesOpaqueBars = true
         self.automaticallyAdjustsScrollViewInsets = false
-        self.tabBarController?.tabBar.hidden = true
+        self.tabBarController?.tabBar.alpha = 0.0
     }
     
     public override func viewDidAppear(animated: Bool) {
