@@ -267,6 +267,9 @@ public class IMGLYCameraViewController: UIViewController {
         if let filterSelectionViewConstraint = filterSelectionViewConstraint where filterSelectionViewConstraint.constant != 0 {
             filterSelectionController.beginAppearanceTransition(true, animated: animated)
         }
+        self.extendedLayoutIncludesOpaqueBars = true
+        self.automaticallyAdjustsScrollViewInsets = false
+        self.tabBarController?.tabBar.hidden = true
     }
     
     public override func viewDidAppear(animated: Bool) {
