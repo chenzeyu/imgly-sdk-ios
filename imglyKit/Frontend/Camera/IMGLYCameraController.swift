@@ -302,13 +302,14 @@ public class IMGLYCameraController: NSObject {
     }
     
     private func setupMaskIndicatorLayer() {
-        maskIndicatorLayer.borderColor = UIColor.whiteColor().CGColor
-        maskIndicatorLayer.borderWidth = 1
-        maskIndicatorLayer.frame.origin = CGPointMake(0, 0)
-        maskIndicatorLayer.frame.size = CGSize(width: kIMGLYIndicatorSize, height: kIMGLYIndicatorSize)
-        maskIndicatorLayer.hidden = true
-        maskIndicatorLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
-        previewView.layer.addSublayer(maskIndicatorLayer)
+//        maskIndicatorLayer.borderColor = UIColor.whiteColor().CGColor
+//        maskIndicatorLayer.borderWidth = 1
+//        maskIndicatorLayer.frame.origin = CGPointMake(0, 0)
+//        maskIndicatorLayer.frame.size = CGSize(width: kIMGLYIndicatorSize, height: kIMGLYIndicatorSize)
+//        maskIndicatorLayer.hidden = true
+//        maskIndicatorLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+//        previewView.layer.addSublayer(maskIndicatorLayer)
+//        maskIndicatorLayer.position = CGPoint(x: CGRectGetMidX(previewView.layer.bounds), y: CGRectGetMidY(previewView.layer.bounds))
     }
     
     private func setupUpperMaskDarkenLayer() {
@@ -316,9 +317,10 @@ public class IMGLYCameraController: NSObject {
         upperMaskDarkenLayer.frame.origin = CGPointMake(0, 0)
         upperMaskDarkenLayer.frame.size = CGSize(width: kIMGLYIndicatorSize, height: kIMGLYIndicatorSize)
         upperMaskDarkenLayer.hidden = true
-        upperMaskDarkenLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+//        upperMaskDarkenLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         upperMaskDarkenLayer.backgroundColor = UIColor(white: 0.0, alpha: 0.8).CGColor
         previewView.layer.addSublayer(upperMaskDarkenLayer)
+        upperMaskDarkenLayer.position = CGPoint(x: CGRectGetMidX(previewView.layer.bounds), y: CGRectGetMidY(previewView.layer.bounds))
     }
 
     private func setupLowerMaskDarkenLayer() {
@@ -326,9 +328,10 @@ public class IMGLYCameraController: NSObject {
         lowerMaskDarkenLayer.frame.origin = CGPointMake(0, 0)
         lowerMaskDarkenLayer.frame.size = CGSize(width: kIMGLYIndicatorSize, height: kIMGLYIndicatorSize)
         lowerMaskDarkenLayer.hidden = true
-        lowerMaskDarkenLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+//        lowerMaskDarkenLayer.anchorPoint = CGPoint(x: 0.5, y: 0.5)
         lowerMaskDarkenLayer.backgroundColor = UIColor(white: 0.0, alpha: 0.8).CGColor
         previewView.layer.addSublayer(lowerMaskDarkenLayer)
+        lowerMaskDarkenLayer.position = CGPoint(x: CGRectGetMidX(previewView.layer.bounds), y: CGRectGetMidY(previewView.layer.bounds))
     }
     
     
@@ -698,8 +701,6 @@ public class IMGLYCameraController: NSObject {
         if setupComplete {
             return
         }
-        
-        checkSDKVersion()
         checkDeviceAuthorizationStatus()
         
         guard let glContext = EAGLContext(API: .OpenGLES2) else {
@@ -845,25 +846,25 @@ public class IMGLYCameraController: NSObject {
     }
     
     private func setupAudioInputs() {
-        var error: NSError?
-        
-        let audioDevice = IMGLYCameraController.deviceWithMediaType(AVMediaTypeAudio, preferringPosition: nil)
-        let audioDeviceInput: AVCaptureDeviceInput!
-        do {
-            audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
-        } catch let error1 as NSError {
-            error = error1
-            audioDeviceInput = nil
-        }
-        
-        if let error = error {
-            print("Error in setupAudioInputs: \(error.description)")
-        }
-        
-        if self.session.canAddInput(audioDeviceInput) {
-            self.session.addInput(audioDeviceInput)
-            self.audioDeviceInput = audioDeviceInput
-        }
+//        var error: NSError?
+//        
+//        let audioDevice = IMGLYCameraController.deviceWithMediaType(AVMediaTypeAudio, preferringPosition: nil)
+//        let audioDeviceInput: AVCaptureDeviceInput!
+//        do {
+//            audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice)
+//        } catch let error1 as NSError {
+//            error = error1
+//            audioDeviceInput = nil
+//        }
+//        
+//        if let error = error {
+//            print("Error in setupAudioInputs: \(error.description)")
+//        }
+//        
+//        if self.session.canAddInput(audioDeviceInput) {
+//            self.session.addInput(audioDeviceInput)
+//            self.audioDeviceInput = audioDeviceInput
+//        }
     }
     
     private func setupOutputs() {

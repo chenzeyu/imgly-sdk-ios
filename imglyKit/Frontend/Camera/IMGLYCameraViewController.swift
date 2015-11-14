@@ -280,6 +280,7 @@ public class IMGLYCameraViewController: UIViewController {
         }
         
         setLastImageFromRollAsPreview()
+        cameraController?.showSquareMask()
         cameraController?.startCamera()
     }
     
