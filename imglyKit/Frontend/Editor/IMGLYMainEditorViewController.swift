@@ -122,7 +122,6 @@ public class IMGLYMainEditorViewController: IMGLYEditorViewController {
     
     override public func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        self.tabBarController?.tabBar.alpha = 0.0
     }
     
     override public func viewDidLoad() {
@@ -132,8 +131,6 @@ public class IMGLYMainEditorViewController: IMGLYEditorViewController {
         navigationItem.title = NSLocalizedString("main-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelTapped:")
         
-        self.extendedLayoutIncludesOpaqueBars = true
-        self.automaticallyAdjustsScrollViewInsets = false
         
         fixedFilterStack.effectFilter = IMGLYInstanceFactory.effectFilterWithType(initialFilterType)
         fixedFilterStack.effectFilter.inputIntensity = initialFilterIntensity
