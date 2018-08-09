@@ -14,16 +14,16 @@ import CoreImage
 import QuartzCore
 #endif
 
-public class IMGLYContrastBrightnessSaturationFilter : CIFilter {
+open class IMGLYContrastBrightnessSaturationFilter : CIFilter {
     /// A CIImage object that serves as input for the filter.
-    public var inputImage:CIImage?
+    open var inputImage:CIImage?
     
-    public var contrast:Float = 1.0
-    public var brightness:Float = 0.0
-    public var saturation:Float = 1.0
+    open var contrast:Float = 1.0
+    open var brightness:Float = 0.0
+    open var saturation:Float = 1.0
     
     /// Returns a CIImage object that encapsulates the operations configured in the filter. (read-only)
-    public override var outputImage: CIImage? {
+    open override var outputImage: CIImage? {
         guard let inputImage = inputImage else {
             return nil
         }
@@ -41,9 +41,9 @@ public class IMGLYContrastBrightnessSaturationFilter : CIFilter {
 }
 
 extension IMGLYContrastBrightnessSaturationFilter {
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = super.copyWithZone(zone) as! IMGLYContrastBrightnessSaturationFilter
-        copy.inputImage = inputImage?.copyWithZone(zone) as? CIImage
+    open override func copy(with zone: NSZone?) -> Any {
+        let copy = super.copy(with: zone) as! IMGLYContrastBrightnessSaturationFilter
+        copy.inputImage = inputImage?.copy(with: zone) as? CIImage
         copy.contrast = contrast
         copy.brightness = brightness
         copy.saturation = saturation

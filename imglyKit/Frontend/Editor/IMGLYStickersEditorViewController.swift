@@ -11,23 +11,23 @@ import UIKit
 let StickersCollectionViewCellSize = CGSize(width: 90, height: 90)
 let StickersCollectionViewCellReuseIdentifier = "StickersCollectionViewCell"
 
-public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
+open class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
 
     // MARK: - Properties
     
-    public var stickersDataSource = IMGLYStickersDataSource()
-    public private(set) lazy var stickersClipView: UIView = {
+    open var stickersDataSource = IMGLYStickersDataSource()
+    open fileprivate(set) lazy var stickersClipView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         return view
         }()
     
-    private var draggedView: UIView?
-    private var tempStickerCopy = [CIFilter]()
+    fileprivate var draggedView: UIView?
+    fileprivate var tempStickerCopy = [CIFilter]()
     
     // MARK: - SubEditorViewController
     
-    public override func tappedDone(sender: UIBarButtonItem?) {
+    open override func tappedDone(_ sender: UIBarButtonItem?) {
         var addedStickers = false
         
         for view in stickersClipView.subviews {
@@ -62,8 +62,8 @@ public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Helpers
     
-    private func initialSizeForStickerImage(image: UIImage) -> CGSize {
-        let initialMaxStickerSize = CGRectGetWidth(stickersClipView.bounds) * 0.3
+    fileprivate func initialSizeForStickerImage(_ image: UIImage) -> CGSize {
+        let initialMaxStickerSize = stickersClipView.bounds.width * 0.3
         let widthRatio = initialMaxStickerSize / image.size.width
         let heightRatio = initialMaxStickerSize / image.size.height
         let scale = min(widthRatio, heightRatio)
@@ -73,10 +73,10 @@ public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - UIViewController
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         navigationItem.title = NSLocalizedString("stickers-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
         
         configureStickersCollectionView()
@@ -86,106 +86,106 @@ public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
         fixedFilterStack.stickerFilters.removeAll()
     }
     
-    public override func viewDidAppear(animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         rerenderPreviewWithoutStickers()
     }
     
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        stickersClipView.frame = view.convertRect(previewImageView.visibleImageFrame, fromView: previewImageView)
+        stickersClipView.frame = view.convert(previewImageView.visibleImageFrame, from: previewImageView)
     }
     
     // MARK: - Configuration
     
-    private func configureStickersCollectionView() {
+    fileprivate func configureStickersCollectionView() {
         let flowLayout = UICollectionViewFlowLayout()
         flowLayout.itemSize = StickersCollectionViewCellSize
-        flowLayout.scrollDirection = .Horizontal
+        flowLayout.scrollDirection = .horizontal
         flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         flowLayout.minimumInteritemSpacing = 0
         flowLayout.minimumLineSpacing = 10
         
-        let collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: flowLayout)
+        let collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: flowLayout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = stickersDataSource
         collectionView.delegate = self
-        collectionView.registerClass(IMGLYStickerCollectionViewCell.self, forCellWithReuseIdentifier: StickersCollectionViewCellReuseIdentifier)
+        collectionView.register(IMGLYStickerCollectionViewCell.self, forCellWithReuseIdentifier: StickersCollectionViewCellReuseIdentifier)
         
         let views = [ "collectionView" : collectionView ]
         bottomContainerView.addSubview(collectionView)
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[collectionView]|", options: [], metrics: nil, views: views))
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[collectionView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[collectionView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[collectionView]|", options: [], metrics: nil, views: views))
     }
     
-    private func configureStickersClipView() {
+    fileprivate func configureStickersClipView() {
         view.addSubview(stickersClipView)
     }
     
-    private func configureGestureRecognizers() {
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "panned:")
+    fileprivate func configureGestureRecognizers() {
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(IMGLYStickersEditorViewController.panned(_:)))
         panGestureRecognizer.minimumNumberOfTouches = 1
         panGestureRecognizer.maximumNumberOfTouches = 1
         stickersClipView.addGestureRecognizer(panGestureRecognizer)
         
-        let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: "pinched:")
+        let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(IMGLYStickersEditorViewController.pinched(_:)))
         pinchGestureRecognizer.delegate = self
         stickersClipView.addGestureRecognizer(pinchGestureRecognizer)
         
-        let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: "rotated:")
+        let rotationGestureRecognizer = UIRotationGestureRecognizer(target: self, action: #selector(IMGLYStickersEditorViewController.rotated(_:)))
         rotationGestureRecognizer.delegate = self
         stickersClipView.addGestureRecognizer(rotationGestureRecognizer)
     }
     
     // MARK: - Gesture Handling
     
-    @objc private func panned(recognizer: UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(stickersClipView)
-        let translation = recognizer.translationInView(stickersClipView)
+    @objc fileprivate func panned(_ recognizer: UIPanGestureRecognizer) {
+        let location = recognizer.location(in: stickersClipView)
+        let translation = recognizer.translation(in: stickersClipView)
         
         switch recognizer.state {
-        case .Began:
-            draggedView = stickersClipView.hitTest(location, withEvent: nil) as? UIImageView
+        case .began:
+            draggedView = stickersClipView.hitTest(location, with: nil) as? UIImageView
             if let draggedView = draggedView {
-                stickersClipView.bringSubviewToFront(draggedView)
+                stickersClipView.bringSubview(toFront: draggedView)
             }
-        case .Changed:
+        case .changed:
             if let draggedView = draggedView {
                 draggedView.center = CGPoint(x: draggedView.center.x + translation.x, y: draggedView.center.y + translation.y)
             }
             
-            recognizer.setTranslation(CGPointZero, inView: stickersClipView)
-        case .Cancelled, .Ended:
+            recognizer.setTranslation(CGPoint.zero, in: stickersClipView)
+        case .cancelled, .ended:
             draggedView = nil
         default:
             break
         }
     }
     
-    @objc private func pinched(recognizer: UIPinchGestureRecognizer) {
-        if recognizer.numberOfTouches() == 2 {
-            let point1 = recognizer.locationOfTouch(0, inView: stickersClipView)
-            let point2 = recognizer.locationOfTouch(1, inView: stickersClipView)
+    @objc fileprivate func pinched(_ recognizer: UIPinchGestureRecognizer) {
+        if recognizer.numberOfTouches == 2 {
+            let point1 = recognizer.location(ofTouch: 0, in: stickersClipView)
+            let point2 = recognizer.location(ofTouch: 1, in: stickersClipView)
             let midpoint = CGPoint(x:(point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
             let scale = recognizer.scale
             
             switch recognizer.state {
-            case .Began:
+            case .began:
                 if draggedView == nil {
-                    draggedView = stickersClipView.hitTest(midpoint, withEvent: nil) as? UIImageView
+                    draggedView = stickersClipView.hitTest(midpoint, with: nil) as? UIImageView
                 }
                 
                 if let draggedView = draggedView {
-                    stickersClipView.bringSubviewToFront(draggedView)
+                    stickersClipView.bringSubview(toFront: draggedView)
                 }
-            case .Changed:
+            case .changed:
                 if let draggedView = draggedView {
-                    draggedView.transform = CGAffineTransformScale(draggedView.transform, scale, scale)
+                    draggedView.transform = draggedView.transform.scaledBy(x: scale, y: scale)
                 }
                 
                 recognizer.scale = 1
-            case .Cancelled, .Ended:
+            case .cancelled, .ended:
                 draggedView = nil
             default:
                 break
@@ -193,29 +193,29 @@ public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    @objc private func rotated(recognizer: UIRotationGestureRecognizer) {
-        if recognizer.numberOfTouches() == 2 {
-            let point1 = recognizer.locationOfTouch(0, inView: stickersClipView)
-            let point2 = recognizer.locationOfTouch(1, inView: stickersClipView)
+    @objc fileprivate func rotated(_ recognizer: UIRotationGestureRecognizer) {
+        if recognizer.numberOfTouches == 2 {
+            let point1 = recognizer.location(ofTouch: 0, in: stickersClipView)
+            let point2 = recognizer.location(ofTouch: 1, in: stickersClipView)
             let midpoint = CGPoint(x:(point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
             let rotation = recognizer.rotation
             
             switch recognizer.state {
-            case .Began:
+            case .began:
                 if draggedView == nil {
-                    draggedView = stickersClipView.hitTest(midpoint, withEvent: nil) as? UIImageView
+                    draggedView = stickersClipView.hitTest(midpoint, with: nil) as? UIImageView
                 }
                 
                 if let draggedView = draggedView {
-                    stickersClipView.bringSubviewToFront(draggedView)
+                    stickersClipView.bringSubview(toFront: draggedView)
                 }
-            case .Changed:
+            case .changed:
                 if let draggedView = draggedView {
-                    draggedView.transform = CGAffineTransformRotate(draggedView.transform, rotation)
+                    draggedView.transform = draggedView.transform.rotated(by: rotation)
                 }
                 
                 recognizer.rotation = 0
-            case .Cancelled, .Ended:
+            case .cancelled, .ended:
                 draggedView = nil
             default:
                 break
@@ -226,20 +226,20 @@ public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - sticker object restore
     
-    private func rerenderPreviewWithoutStickers() {
+    fileprivate func rerenderPreviewWithoutStickers() {
         updatePreviewImageWithCompletion { () -> (Void) in
             self.addStickerImagesFromStickerFilters(self.tempStickerCopy)
         }
     }
     
-    private func addStickerImagesFromStickerFilters(stickerFilters: [CIFilter]) {
+    fileprivate func addStickerImagesFromStickerFilters(_ stickerFilters: [CIFilter]) {
         for element in stickerFilters {
             guard let stickerFilter = element as? IMGLYStickerFilter else {
                 return
             }
             
             let imageView = UIImageView(image: stickerFilter.sticker)
-            imageView.userInteractionEnabled = true
+            imageView.isUserInteractionEnabled = true
             
             let size = stickerFilter.absolutStickerSizeForImageSize(stickersClipView.bounds.size)
             imageView.frame.size = size
@@ -252,30 +252,30 @@ public class IMGLYStickersEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    private func backupStickers() {
+    fileprivate func backupStickers() {
         tempStickerCopy = fixedFilterStack.stickerFilters
     }
 }
 
 extension IMGLYStickersEditorViewController: UICollectionViewDelegate {
     // add selected sticker
-    public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sticker = stickersDataSource.stickers[indexPath.row]
         let imageView = UIImageView(image: sticker.image)
-        imageView.userInteractionEnabled = true
+        imageView.isUserInteractionEnabled = true
         imageView.frame.size = initialSizeForStickerImage(sticker.image)
-        imageView.center = CGPoint(x: CGRectGetMidX(stickersClipView.bounds), y: CGRectGetMidY(stickersClipView.bounds))
+        imageView.center = CGPoint(x: stickersClipView.bounds.midX, y: stickersClipView.bounds.midY)
         stickersClipView.addSubview(imageView)
-        imageView.transform = CGAffineTransformMakeScale(0, 0)
+        imageView.transform = CGAffineTransform(scaleX: 0, y: 0)
         
-        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [], animations: { () -> Void in
-            imageView.transform = CGAffineTransformIdentity
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0, options: [], animations: { () -> Void in
+            imageView.transform = CGAffineTransform.identity
             }, completion: nil)
     }
 }
 
 extension IMGLYStickersEditorViewController: UIGestureRecognizerDelegate {
-    public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if (gestureRecognizer is UIPinchGestureRecognizer && otherGestureRecognizer is UIRotationGestureRecognizer) || (gestureRecognizer is UIRotationGestureRecognizer && otherGestureRecognizer is UIPinchGestureRecognizer) {
             return true
         }

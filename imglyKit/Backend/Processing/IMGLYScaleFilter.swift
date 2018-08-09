@@ -13,12 +13,12 @@
     import QuartzCore
 #endif
 
-public class IMGLYScaleFilter: CIFilter {
-    public var inputImage: CIImage?
-    public var scale = Float(1)
+open class IMGLYScaleFilter: CIFilter {
+    open var inputImage: CIImage?
+    open var scale = Float(1)
     
     /// Returns a CIImage object that encapsulates the operations configured in the filter. (read-only)
-    public override var outputImage: CIImage? {
+    open override var outputImage: CIImage? {
         guard let inputImage = inputImage else {
             return nil
         }
@@ -35,9 +35,9 @@ public class IMGLYScaleFilter: CIFilter {
 }
 
 extension IMGLYScaleFilter {
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = super.copyWithZone(zone) as! IMGLYScaleFilter
-        copy.inputImage = inputImage?.copyWithZone(zone) as? CIImage
+    open override func copy(with zone: NSZone?) -> Any {
+        let copy = super.copy(with: zone) as! IMGLYScaleFilter
+        copy.inputImage = inputImage?.copy(with: zone) as? CIImage
         copy.scale = scale
         return copy
     }

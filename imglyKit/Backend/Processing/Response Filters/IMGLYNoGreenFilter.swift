@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYNoGreenFilter: IMGLYResponseFilter {
+open class IMGLYNoGreenFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "NoGreen")
         self.imgly_displayName = "No Green"
@@ -18,9 +18,9 @@ public class IMGLYNoGreenFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.NoGreen
+            return IMGLYFilterType.noGreen
         }
     }
 }

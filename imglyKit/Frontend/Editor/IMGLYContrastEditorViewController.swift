@@ -8,32 +8,32 @@
 
 import UIKit
 
-public class IMGLYContrastEditorViewController: IMGLYSliderEditorViewController {
+open class IMGLYContrastEditorViewController: IMGLYSliderEditorViewController {
 
     // MARK: - UIViewController
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         navigationItem.title = NSLocalizedString("contrast-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
     }
     
     // MARK: - SliderEditorViewController
     
-    override public var minimumValue: Float {
+    override open var minimumValue: Float {
         return 0
     }
     
-    override public var maximumValue: Float {
+    override open var maximumValue: Float {
         return 2
     }
     
-    override public var initialValue: Float {
+    override open var initialValue: Float {
         return fixedFilterStack.brightnessFilter.contrast
     }
     
-    override public func valueChanged(value: Float) {
+    override open func valueChanged(_ value: Float) {
         fixedFilterStack.brightnessFilter.contrast = slider.value
     }
 

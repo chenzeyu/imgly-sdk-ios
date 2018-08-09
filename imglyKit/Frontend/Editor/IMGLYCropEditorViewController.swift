@@ -9,89 +9,89 @@
 import UIKit
 
 @objc public enum IMGLYSelectionMode: Int {
-    case Free
-    case OneToOne
-    case FourToThree
-    case SixteenToNine
+    case free
+    case oneToOne
+    case fourToThree
+    case sixteenToNine
 }
 
 public let MinimumCropSize = CGFloat(50)
 
-public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
+open class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
 
     // MARK: - Properties
     
-    public private(set) lazy var freeRatioButton: IMGLYImageCaptionButton = {
-        let bundle = NSBundle(forClass: self.dynamicType)
+    open fileprivate(set) lazy var freeRatioButton: IMGLYImageCaptionButton = {
+        let bundle = Bundle(for: type(of: self))
         let button = IMGLYImageCaptionButton()
         button.textLabel.text = NSLocalizedString("crop-editor.free", tableName: nil, bundle: bundle, value: "", comment: "")
-        button.imageView.image = UIImage(named: "icon_crop_custom", inBundle: bundle, compatibleWithTraitCollection: nil)
+        button.imageView.image = UIImage(named: "icon_crop_custom", in: bundle, compatibleWith: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: "activateFreeRatio:", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(IMGLYCropEditorViewController.activateFreeRatio(_:)), for: .touchUpInside)
         return button
         }()
     
-    public private(set) lazy var oneToOneRatioButton: IMGLYImageCaptionButton = {
-        let bundle = NSBundle(forClass: self.dynamicType)
+    open fileprivate(set) lazy var oneToOneRatioButton: IMGLYImageCaptionButton = {
+        let bundle = Bundle(for: type(of: self))
         let button = IMGLYImageCaptionButton()
         button.textLabel.text = NSLocalizedString("crop-editor.1-to-1", tableName: nil, bundle: bundle, value: "", comment: "")
-        button.imageView.image = UIImage(named: "icon_crop_square", inBundle: bundle, compatibleWithTraitCollection: nil)
+        button.imageView.image = UIImage(named: "icon_crop_square", in: bundle, compatibleWith: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: "activateOneToOneRatio:", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(IMGLYCropEditorViewController.activateOneToOneRatio(_:)), for: .touchUpInside)
         return button
         }()
     
-    public private(set) lazy var fourToThreeRatioButton: IMGLYImageCaptionButton = {
-        let bundle = NSBundle(forClass: self.dynamicType)
+    open fileprivate(set) lazy var fourToThreeRatioButton: IMGLYImageCaptionButton = {
+        let bundle = Bundle(for: type(of: self))
         let button = IMGLYImageCaptionButton()
         button.textLabel.text = NSLocalizedString("crop-editor.4-to-3", tableName: nil, bundle: bundle, value: "", comment: "")
-        button.imageView.image = UIImage(named: "icon_crop_4-3", inBundle: bundle, compatibleWithTraitCollection: nil)
+        button.imageView.image = UIImage(named: "icon_crop_4-3", in: bundle, compatibleWith: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: "activateFourToThreeRatio:", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(IMGLYCropEditorViewController.activateFourToThreeRatio(_:)), for: .touchUpInside)
         return button
         }()
     
-    public private(set) lazy var sixteenToNineRatioButton: IMGLYImageCaptionButton = {
-        let bundle = NSBundle(forClass: self.dynamicType)
+    open fileprivate(set) lazy var sixteenToNineRatioButton: IMGLYImageCaptionButton = {
+        let bundle = Bundle(for: type(of: self))
         let button = IMGLYImageCaptionButton()
         button.textLabel.text = NSLocalizedString("crop-editor.16-to-9", tableName: nil, bundle: bundle, value: "", comment: "")
-        button.imageView.image = UIImage(named: "icon_crop_16-9", inBundle: bundle, compatibleWithTraitCollection: nil)
+        button.imageView.image = UIImage(named: "icon_crop_16-9", in: bundle, compatibleWith: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: "activateSixteenToNineRatio:", forControlEvents: .TouchUpInside)
+        button.addTarget(self, action: #selector(IMGLYCropEditorViewController.activateSixteenToNineRatio(_:)), for: .touchUpInside)
         return button
         }()
     
-    private var selectedButton: IMGLYImageCaptionButton? {
+    fileprivate var selectedButton: IMGLYImageCaptionButton? {
         willSet(newSelectedButton) {
-            self.selectedButton?.selected = false
+            self.selectedButton?.isSelected = false
         }
         
         didSet {
-            self.selectedButton?.selected = true
+            self.selectedButton?.isSelected = true
         }
     }
     
-    private lazy var transparentRectView: UIView = {
+    fileprivate lazy var transparentRectView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
         return view
         }()
     
-    private let cropRectComponent = IMGLYInstanceFactory.cropRectComponent()
-    public var selectionMode = IMGLYSelectionMode.Free
-    public var selectionRatio = CGFloat(1.0)
-    private var cropRectLeftBound = CGFloat(0)
-    private var cropRectRightBound = CGFloat(0)
-    private var cropRectTopBound = CGFloat(0)
-    private var cropRectBottomBound = CGFloat(0)
-    private var dragOffset = CGPointZero
+    fileprivate let cropRectComponent = IMGLYInstanceFactory.cropRectComponent()
+    open var selectionMode = IMGLYSelectionMode.free
+    open var selectionRatio = CGFloat(1.0)
+    fileprivate var cropRectLeftBound = CGFloat(0)
+    fileprivate var cropRectRightBound = CGFloat(0)
+    fileprivate var cropRectTopBound = CGFloat(0)
+    fileprivate var cropRectBottomBound = CGFloat(0)
+    fileprivate var dragOffset = CGPoint.zero
 
     // MARK: - UIViewController
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         navigationItem.title = NSLocalizedString("crop-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
         
         configureButtons()
@@ -99,7 +99,7 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         selectedButton = freeRatioButton
     }
     
-    public override func viewDidAppear(animated: Bool) {
+    open override func viewDidAppear(_ animated: Bool) {
         let cropRect = fixedFilterStack.orientationCropFilter.cropRect
         if cropRect.origin.x != 0 || cropRect.origin.y != 0 ||
             cropRect.size.width != 1.0 || cropRect.size.height != 1.0 {
@@ -117,16 +117,16 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    public override func viewDidLayoutSubviews() {
+    open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        transparentRectView.frame = view.convertRect(previewImageView.visibleImageFrame, fromView: previewImageView)
+        transparentRectView.frame = view.convert(previewImageView.visibleImageFrame, from: previewImageView)
         reCalculateCropRectBounds()
     }
     
     // MARK: - SubEditorViewController
     
-    public override func tappedDone(sender: UIBarButtonItem?) {
+    open override func tappedDone(_ sender: UIBarButtonItem?) {
         fixedFilterStack.orientationCropFilter.cropRect = normalizedCropRect()
         
         updatePreviewImageWithCompletion {
@@ -136,7 +136,7 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Configuration
     
-    private func configureButtons() {
+    fileprivate func configureButtons() {
         let buttonContainerView = UIView()
         buttonContainerView.translatesAutoresizingMaskIntoConstraints = false
         bottomContainerView.addSubview(buttonContainerView)
@@ -160,19 +160,19 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         
         // Button Constraints
         
-        buttonContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[freeRatioButton(==buttonWidth)][oneToOneRatioButton(==freeRatioButton)][fourToThreeRatioButton(==freeRatioButton)][sixteenToNineRatioButton(==freeRatioButton)]|", options: [], metrics: metrics, views: views))
-        buttonContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[freeRatioButton]|", options: [], metrics: nil, views: views))
-        buttonContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[oneToOneRatioButton]|", options: [], metrics: nil, views: views))
-        buttonContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[fourToThreeRatioButton]|", options: [], metrics: nil, views: views))
-        buttonContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[sixteenToNineRatioButton]|", options: [], metrics: nil, views: views))
+        buttonContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[freeRatioButton(==buttonWidth)][oneToOneRatioButton(==freeRatioButton)][fourToThreeRatioButton(==freeRatioButton)][sixteenToNineRatioButton(==freeRatioButton)]|", options: [], metrics: metrics, views: views))
+        buttonContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[freeRatioButton]|", options: [], metrics: nil, views: views))
+        buttonContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[oneToOneRatioButton]|", options: [], metrics: nil, views: views))
+        buttonContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[fourToThreeRatioButton]|", options: [], metrics: nil, views: views))
+        buttonContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[sixteenToNineRatioButton]|", options: [], metrics: nil, views: views))
         
         // Container Constraints
         
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[buttonContainerView]|", options: [], metrics: nil, views: views))
-        bottomContainerView.addConstraint(NSLayoutConstraint(item: buttonContainerView, attribute: .CenterX, relatedBy: .Equal, toItem: bottomContainerView, attribute: .CenterX, multiplier: 1, constant: 0))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[buttonContainerView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraint(NSLayoutConstraint(item: buttonContainerView, attribute: .centerX, relatedBy: .equal, toItem: bottomContainerView, attribute: .centerX, multiplier: 1, constant: 0))
     }
     
-    private func configureCropRect() {
+    fileprivate func configureCropRect() {
         view.addSubview(transparentRectView)
         cropRectComponent.cropRect = fixedFilterStack.orientationCropFilter.cropRect
         cropRectComponent.setup(transparentRectView, parentView: self.view, showAnchors: true)
@@ -182,7 +182,7 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Helpers
     
-    private func updatePreviewImageWithoutCropWithCompletion(completionHandler: IMGLYPreviewImageGenerationCompletionBlock?) {
+    fileprivate func updatePreviewImageWithoutCropWithCompletion(_ completionHandler: IMGLYPreviewImageGenerationCompletionBlock?) {
         let oldCropRect = fixedFilterStack.orientationCropFilter.cropRect
         fixedFilterStack.orientationCropFilter.cropRect = CGRect(x: 0, y: 0, width: 1, height: 1)
         updatePreviewImageWithCompletion { () -> (Void) in
@@ -193,26 +193,26 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Cropping
     
-    private func addGestureRecognizerToTransparentView() {
-        transparentRectView.userInteractionEnabled = true
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+    fileprivate func addGestureRecognizerToTransparentView() {
+        transparentRectView.isUserInteractionEnabled = true
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(IMGLYCropEditorViewController.handlePan(_:)))
         transparentRectView.addGestureRecognizer(panGestureRecognizer)
     }
     
-    private func addGestureRecognizerToAnchors() {
+    fileprivate func addGestureRecognizerToAnchors() {
         addGestureRecognizerToAnchor(cropRectComponent.topLeftAnchor_!)
         addGestureRecognizerToAnchor(cropRectComponent.topRightAnchor_!)
         addGestureRecognizerToAnchor(cropRectComponent.bottomRightAnchor_!)
         addGestureRecognizerToAnchor(cropRectComponent.bottomLeftAnchor_!)
     }
     
-    private func addGestureRecognizerToAnchor(anchor: UIImageView) {
-        anchor.userInteractionEnabled = true
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+    fileprivate func addGestureRecognizerToAnchor(_ anchor: UIImageView) {
+        anchor.isUserInteractionEnabled = true
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(IMGLYCropEditorViewController.handlePan(_:)))
         anchor.addGestureRecognizer(panGestureRecognizer)
     }
     
-    public func handlePan(recognizer:UIPanGestureRecognizer) {
+    open func handlePan(_ recognizer:UIPanGestureRecognizer) {
         if recognizer.view!.isEqual(cropRectComponent.topRightAnchor_) {
             handlePanOnTopRight(recognizer)
         }
@@ -230,14 +230,14 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    public func handlePanOnTopLeft(recognizer:UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(transparentRectView)
+    open func handlePanOnTopLeft(_ recognizer:UIPanGestureRecognizer) {
+        let location = recognizer.location(in: transparentRectView)
         var sizeX = cropRectComponent.bottomRightAnchor_!.center.x - location.x
         var sizeY = cropRectComponent.bottomRightAnchor_!.center.y - location.y
         
         sizeX = CGFloat(Int(sizeX))
         sizeY = CGFloat(Int(sizeY))
-        var size = CGSizeMake(sizeX, sizeY)
+        var size = CGSize(width: sizeX, height: sizeY)
         size = applyMinimumAreaRuleToSize(size)
         size = reCalulateSizeForTopLeftAnchor(size)
         var center = cropRectComponent.topLeftAnchor_!.center
@@ -248,9 +248,9 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         cropRectComponent.layoutViewsForCropRect()
     }
     
-    private func reCalulateSizeForTopLeftAnchor(size:CGSize) -> CGSize {
+    fileprivate func reCalulateSizeForTopLeftAnchor(_ size:CGSize) -> CGSize {
         var newSize = size
-        if selectionMode != IMGLYSelectionMode.Free {
+        if selectionMode != IMGLYSelectionMode.free {
             newSize.height = newSize.height * selectionRatio
             if newSize.height > newSize.width {
                 newSize.width = newSize.height
@@ -277,21 +277,21 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         return newSize
     }
     
-    private func recalculateCropRectFromTopLeftAnchor() {
-        cropRectComponent.cropRect = CGRectMake(cropRectComponent.topLeftAnchor_!.center.x,
-            cropRectComponent.topLeftAnchor_!.center.y,
-            cropRectComponent.bottomRightAnchor_!.center.x - cropRectComponent.topLeftAnchor_!.center.x,
-            cropRectComponent.bottomRightAnchor_!.center.y - cropRectComponent.topLeftAnchor_!.center.y)
+    fileprivate func recalculateCropRectFromTopLeftAnchor() {
+        cropRectComponent.cropRect = CGRect(x: cropRectComponent.topLeftAnchor_!.center.x,
+            y: cropRectComponent.topLeftAnchor_!.center.y,
+            width: cropRectComponent.bottomRightAnchor_!.center.x - cropRectComponent.topLeftAnchor_!.center.x,
+            height: cropRectComponent.bottomRightAnchor_!.center.y - cropRectComponent.topLeftAnchor_!.center.y)
     }
     
-    private func handlePanOnTopRight(recognizer:UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(transparentRectView)
+    fileprivate func handlePanOnTopRight(_ recognizer:UIPanGestureRecognizer) {
+        let location = recognizer.location(in: transparentRectView)
         var sizeX = cropRectComponent.bottomLeftAnchor_!.center.x - location.x
         var sizeY = cropRectComponent.bottomLeftAnchor_!.center.y - location.y
         
         sizeX = CGFloat(abs(Int(sizeX)))
         sizeY = CGFloat(abs(Int(sizeY)))
-        var size = CGSizeMake(sizeX, sizeY)
+        var size = CGSize(width: sizeX, height: sizeY)
         size = applyMinimumAreaRuleToSize(size)
         size = reCalulateSizeForTopRightAnchor(size)
         var center = cropRectComponent.topRightAnchor_!.center
@@ -302,9 +302,9 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         cropRectComponent.layoutViewsForCropRect()
     }
     
-    private func reCalulateSizeForTopRightAnchor(size:CGSize) -> CGSize {
+    fileprivate func reCalulateSizeForTopRightAnchor(_ size:CGSize) -> CGSize {
         var newSize = size
-        if selectionMode != IMGLYSelectionMode.Free {
+        if selectionMode != IMGLYSelectionMode.free {
             newSize.height = newSize.height * selectionRatio
             if newSize.height > newSize.width {
                 newSize.width = newSize.height
@@ -329,22 +329,22 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         return newSize
     }
     
-    private func recalculateCropRectFromTopRightAnchor() {
-        cropRectComponent.cropRect = CGRectMake(cropRectComponent.bottomLeftAnchor_!.center.x,
-            cropRectComponent.topRightAnchor_!.center.y,
-            cropRectComponent.topRightAnchor_!.center.x - cropRectComponent.bottomLeftAnchor_!.center.x,
-            cropRectComponent.bottomLeftAnchor_!.center.y - cropRectComponent.topRightAnchor_!.center.y)
+    fileprivate func recalculateCropRectFromTopRightAnchor() {
+        cropRectComponent.cropRect = CGRect(x: cropRectComponent.bottomLeftAnchor_!.center.x,
+            y: cropRectComponent.topRightAnchor_!.center.y,
+            width: cropRectComponent.topRightAnchor_!.center.x - cropRectComponent.bottomLeftAnchor_!.center.x,
+            height: cropRectComponent.bottomLeftAnchor_!.center.y - cropRectComponent.topRightAnchor_!.center.y)
     }
     
     
-    private func handlePanOnBottomLeft(recognizer:UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(transparentRectView)
+    fileprivate func handlePanOnBottomLeft(_ recognizer:UIPanGestureRecognizer) {
+        let location = recognizer.location(in: transparentRectView)
         var sizeX = cropRectComponent.topRightAnchor_!.center.x - location.x
         var sizeY = cropRectComponent.topRightAnchor_!.center.y - location.y
         
         sizeX = CGFloat(abs(Int(sizeX)))
         sizeY = CGFloat(abs(Int(sizeY)))
-        var size = CGSizeMake(sizeX, sizeY)
+        var size = CGSize(width: sizeX, height: sizeY)
         size = applyMinimumAreaRuleToSize(size)
         size = reCalulateSizeForBottomLeftAnchor(size)
         var center = cropRectComponent.bottomLeftAnchor_!.center
@@ -355,9 +355,9 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         cropRectComponent.layoutViewsForCropRect()
     }
     
-    private func reCalulateSizeForBottomLeftAnchor(size:CGSize) -> CGSize {
+    fileprivate func reCalulateSizeForBottomLeftAnchor(_ size:CGSize) -> CGSize {
         var newSize = size
-        if selectionMode != IMGLYSelectionMode.Free {
+        if selectionMode != IMGLYSelectionMode.free {
             newSize.height = newSize.height * selectionRatio
             if (newSize.height > newSize.width) {
                 newSize.width = newSize.height
@@ -385,13 +385,13 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         return newSize
     }
     
-    private func handlePanOnBottomRight(recognizer:UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(transparentRectView)
+    fileprivate func handlePanOnBottomRight(_ recognizer:UIPanGestureRecognizer) {
+        let location = recognizer.location(in: transparentRectView)
         var sizeX = cropRectComponent.topLeftAnchor_!.center.x - location.x
         var sizeY = cropRectComponent.topLeftAnchor_!.center.y - location.y
         sizeX = CGFloat(abs(Int(sizeX)))
         sizeY = CGFloat(abs(Int(sizeY)))
-        var size = CGSizeMake(sizeX, sizeY)
+        var size = CGSize(width: sizeX, height: sizeY)
         size = applyMinimumAreaRuleToSize(size)
         size = reCalulateSizeForBottomRightAnchor(size)
         var center = cropRectComponent.bottomRightAnchor_!.center
@@ -402,9 +402,9 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         cropRectComponent.layoutViewsForCropRect()
     }
     
-    private func reCalulateSizeForBottomRightAnchor(size:CGSize) -> CGSize {
+    fileprivate func reCalulateSizeForBottomRightAnchor(_ size:CGSize) -> CGSize {
         var newSize = size
-        if selectionMode != IMGLYSelectionMode.Free {
+        if selectionMode != IMGLYSelectionMode.free {
             newSize.height = newSize.height * selectionRatio
             if newSize.height > newSize.width {
                 newSize.width = newSize.height
@@ -429,8 +429,8 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         return newSize
     }
     
-    private func handlePanOnTransparentView(recognizer: UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(transparentRectView)
+    fileprivate func handlePanOnTransparentView(_ recognizer: UIPanGestureRecognizer) {
+        let location = recognizer.location(in: transparentRectView)
         if cropRectComponent.cropRect.contains(location) {
             calculateDragOffsetOnNewDrag(recognizer:recognizer)
             let newLocation = clampedLocationToBounds(location)
@@ -442,14 +442,14 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    private func calculateDragOffsetOnNewDrag(recognizer recognizer: UIPanGestureRecognizer) {
-        let location = recognizer.locationInView(transparentRectView)
-        if recognizer.state == UIGestureRecognizerState.Began {
-            dragOffset = CGPointMake(location.x - cropRectComponent.cropRect.origin.x, location.y - cropRectComponent.cropRect.origin.y)
+    fileprivate func calculateDragOffsetOnNewDrag(recognizer: UIPanGestureRecognizer) {
+        let location = recognizer.location(in: transparentRectView)
+        if recognizer.state == UIGestureRecognizerState.began {
+            dragOffset = CGPoint(x: location.x - cropRectComponent.cropRect.origin.x, y: location.y - cropRectComponent.cropRect.origin.y)
         }
     }
     
-    private func clampedLocationToBounds(location: CGPoint) -> CGPoint {
+    fileprivate func clampedLocationToBounds(_ location: CGPoint) -> CGPoint {
         let rect = cropRectComponent.cropRect
         var locationX = location.x
         var locationY = location.y
@@ -470,19 +470,19 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         if bottom > cropRectBottomBound {
             locationY = cropRectBottomBound - cropRectComponent.cropRect.size.height + dragOffset.y
         }
-        return CGPointMake(locationX, locationY)
+        return CGPoint(x: locationX, y: locationY)
     }
     
-    private func normalizedCropRect() -> CGRect {
+    fileprivate func normalizedCropRect() -> CGRect {
         reCalculateCropRectBounds()
         let boundWidth = cropRectRightBound - cropRectLeftBound
         let boundHeight = cropRectBottomBound - cropRectTopBound
         let x = (cropRectComponent.cropRect.origin.x - cropRectLeftBound) / boundWidth
         let y = (cropRectComponent.cropRect.origin.y - cropRectTopBound) / boundHeight
-        return CGRectMake(x, y, cropRectComponent.cropRect.size.width / boundWidth, cropRectComponent.cropRect.size.height / boundHeight)
+        return CGRect(x: x, y: y, width: cropRectComponent.cropRect.size.width / boundWidth, height: cropRectComponent.cropRect.size.height / boundHeight)
     }
     
-    private func reCalculateCropRectBounds() {
+    fileprivate func reCalculateCropRectBounds() {
         let width = transparentRectView.frame.size.width
         let height = transparentRectView.frame.size.height
         cropRectLeftBound = (width - previewImageView.visibleImageFrame.size.width) / 2.0
@@ -491,7 +491,7 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         cropRectBottomBound = height - cropRectTopBound
     }
     
-    private func applyMinimumAreaRuleToSize(size:CGSize) -> CGSize {
+    fileprivate func applyMinimumAreaRuleToSize(_ size:CGSize) -> CGSize {
         var newSize = size
         if newSize.width < MinimumCropSize {
             newSize.width = MinimumCropSize
@@ -503,14 +503,14 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         return newSize
     }
     
-    private func setInitialCropRect() {
+    fileprivate func setInitialCropRect() {
         selectionRatio = 1.0
         setCropRectForSelectionRatio()
     }
     
-    private func setCropRectForSelectionRatio() {
-        let size = CGSizeMake(cropRectRightBound - cropRectLeftBound,
-            cropRectBottomBound - cropRectTopBound)
+    fileprivate func setCropRectForSelectionRatio() {
+        let size = CGSize(width: cropRectRightBound - cropRectLeftBound,
+            height: cropRectBottomBound - cropRectTopBound)
         var rectWidth = size.width
         var rectHeight = rectWidth
         if size.width > size.height {
@@ -522,24 +522,24 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
         let sizeDeltaX = (size.width - rectWidth) / 2.0
         let sizeDeltaY = (size.height - rectHeight) / 2.0
         
-        cropRectComponent.cropRect = CGRectMake(
-            cropRectLeftBound  + sizeDeltaX,
-            cropRectTopBound + sizeDeltaY,
-            rectWidth,
-            rectHeight)
+        cropRectComponent.cropRect = CGRect(
+            x: cropRectLeftBound  + sizeDeltaX,
+            y: cropRectTopBound + sizeDeltaY,
+            width: rectWidth,
+            height: rectHeight)
     }
     
-    private func calculateRatioForSelectionMode() {
-        if selectionMode == IMGLYSelectionMode.FourToThree {
+    fileprivate func calculateRatioForSelectionMode() {
+        if selectionMode == IMGLYSelectionMode.fourToThree {
             selectionRatio = 4.0 / 3.0
         }
-        else if selectionMode == IMGLYSelectionMode.OneToOne {
+        else if selectionMode == IMGLYSelectionMode.oneToOne {
             selectionRatio = 1.0
         }
-        else if selectionMode == IMGLYSelectionMode.SixteenToNine {
+        else if selectionMode == IMGLYSelectionMode.sixteenToNine {
             selectionRatio = 16.0 / 9.0
         }
-        if selectionMode != IMGLYSelectionMode.Free {
+        if selectionMode != IMGLYSelectionMode.free {
             setCropRectForSelectionRatio()
             cropRectComponent.layoutViewsForCropRect()
         }
@@ -547,45 +547,45 @@ public class IMGLYCropEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Actions
     
-    @objc private func activateFreeRatio(sender: IMGLYImageCaptionButton) {
+    @objc fileprivate func activateFreeRatio(_ sender: IMGLYImageCaptionButton) {
         if selectedButton == sender {
             return
         }
         
-        selectionMode = IMGLYSelectionMode.Free
+        selectionMode = IMGLYSelectionMode.free
         calculateRatioForSelectionMode()
         
         selectedButton = sender
     }
     
-    @objc private func activateOneToOneRatio(sender: IMGLYImageCaptionButton) {
+    @objc fileprivate func activateOneToOneRatio(_ sender: IMGLYImageCaptionButton) {
         if selectedButton == sender {
             return
         }
         
-        selectionMode = IMGLYSelectionMode.OneToOne
+        selectionMode = IMGLYSelectionMode.oneToOne
         calculateRatioForSelectionMode()
         
         selectedButton = sender
     }
     
-    @objc private func activateFourToThreeRatio(sender: IMGLYImageCaptionButton) {
+    @objc fileprivate func activateFourToThreeRatio(_ sender: IMGLYImageCaptionButton) {
         if selectedButton == sender {
             return
         }
         
-        selectionMode = IMGLYSelectionMode.FourToThree
+        selectionMode = IMGLYSelectionMode.fourToThree
         calculateRatioForSelectionMode()
         
         selectedButton = sender
     }
     
-    @objc private func activateSixteenToNineRatio(sender: IMGLYImageCaptionButton) {
+    @objc fileprivate func activateSixteenToNineRatio(_ sender: IMGLYImageCaptionButton) {
         if selectedButton == sender {
             return
         }
         
-        selectionMode = IMGLYSelectionMode.SixteenToNine
+        selectionMode = IMGLYSelectionMode.sixteenToNine
         calculateRatioForSelectionMode()
         
         selectedButton = sender

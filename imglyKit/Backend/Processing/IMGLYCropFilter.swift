@@ -17,13 +17,13 @@ import CoreGraphics
 /**
    Provides a filter to crop images.
 */
-public class IMGLYCropFilter : CIFilter {
+open class IMGLYCropFilter : CIFilter {
     /// A CIImage object that serves as input for the filter.
-    public var inputImage:CIImage?
+    open var inputImage:CIImage?
     
     /// A rect that describes the area that should remain after cropping. 
     /// The values are relative.
-    public var cropRect = CGRectMake(0, 0, 1, 1)
+    open var cropRect = CGRect(x: 0, y: 0, width: 1, height: 1)
     
     override init() {
         super.init()
@@ -34,7 +34,7 @@ public class IMGLYCropFilter : CIFilter {
     }
     
     /// Returns a CIImage object that encapsulates the operations configured in the filter. (read-only)
-    public override var outputImage: CIImage? {
+    open override var outputImage: CIImage? {
         guard let inputImage = inputImage else {
             return nil
         }
@@ -48,21 +48,21 @@ public class IMGLYCropFilter : CIFilter {
             width: cropRect.size.width * rect.size.width,
             height: -cropRect.size.height * rect.size.height)
         
-        let croppedImage = inputImage.imageByCroppingToRect(scaledRect)
+        let croppedImage = inputImage.cropping(to: scaledRect)
         
         // CICrop does not actually crop the image, but rather hides parts of the image
         // To actually get the cropped contents only, we have to apply a transform
         let croppedImageRect = croppedImage.extent
-        let transformedImage = croppedImage.imageByApplyingTransform(CGAffineTransformMakeTranslation(-1 * croppedImageRect.origin.x, -1 * croppedImageRect.origin.y))
+        let transformedImage = croppedImage.applying(CGAffineTransform(translationX: -1 * croppedImageRect.origin.x, y: -1 * croppedImageRect.origin.y))
         
         return transformedImage
     }
 }
 
 extension IMGLYCropFilter {
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = super.copyWithZone(zone) as! IMGLYCropFilter
-        copy.inputImage = inputImage?.copyWithZone(zone) as? CIImage
+    open override func copy(with zone: NSZone?) -> Any {
+        let copy = super.copy(with: zone) as! IMGLYCropFilter
+        copy.inputImage = inputImage?.copy(with: zone) as? CIImage
         copy.cropRect = cropRect
         return copy
     }

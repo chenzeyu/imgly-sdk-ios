@@ -19,72 +19,72 @@ import AppKit
 All types of response-filters.
 */
 @objc public enum IMGLYFilterType: Int {
-    case None,
-    K1,
-    K2,
-    K6,
-    KDynamic,
-    Fridge,
-    Breeze,
-    Orchid,
-    Chest,
-    Front,
-    Fixie,
-    X400,
-    BW,
-    AD1920,
-    Lenin,
-    Quozi,
-    Pola669,
-    PolaSX,
-    Food,
-    Glam,
-    Celsius,
-    Texas,
-    Lomo,
-    Goblin,
-    Sin,
-    Mellow,
-    Soft,
-    Blues,
-    Elder,
-    Sunset,
-    Evening,
-    Steel,
-    Seventies,
-    HighContrast,
-    BlueShadows,
-    Highcarb,
-    Eighties,
-    Colorful,
-    Lomo100,
-    Pro400,
-    Twilight,
-    CottonCandy,
-    Pale,
-    Settled,
-    Cool,
-    Litho,
-    Ancient,
-    Pitched,
-    Lucid,
-    Creamy,
-    Keen,
-    Tender,
-    Bleached,
-    BleachedBlue,
-    Fall,
-    Winter,
-    SepiaHigh,
-    Summer,
-    Classic,
-    NoGreen,
-    Neat,
-    Plate
+    case none,
+    k1,
+    k2,
+    k6,
+    kDynamic,
+    fridge,
+    breeze,
+    orchid,
+    chest,
+    front,
+    fixie,
+    x400,
+    bw,
+    ad1920,
+    lenin,
+    quozi,
+    pola669,
+    polaSX,
+    food,
+    glam,
+    celsius,
+    texas,
+    lomo,
+    goblin,
+    sin,
+    mellow,
+    soft,
+    blues,
+    elder,
+    sunset,
+    evening,
+    steel,
+    seventies,
+    highContrast,
+    blueShadows,
+    highcarb,
+    eighties,
+    colorful,
+    lomo100,
+    pro400,
+    twilight,
+    cottonCandy,
+    pale,
+    settled,
+    cool,
+    litho,
+    ancient,
+    pitched,
+    lucid,
+    creamy,
+    keen,
+    tender,
+    bleached,
+    bleachedBlue,
+    fall,
+    winter,
+    sepiaHigh,
+    summer,
+    classic,
+    noGreen,
+    neat,
+    plate
 }
 
-public class IMGLYPhotoProcessor {
-    public class func processWithCIImage(image: CIImage, filters: [CIFilter]) -> CIImage? {
+open class IMGLYPhotoProcessor {
+    open class func processWithCIImage(_ image: CIImage, filters: [CIFilter]) -> CIImage? {
         if filters.count == 0 {
             return image
         }
@@ -97,7 +97,7 @@ public class IMGLYPhotoProcessor {
             currentImage = filter.outputImage
         }
         
-        if let currentImage = currentImage where CGRectIsEmpty(currentImage.extent) {
+        if let currentImage = currentImage, currentImage.extent.isEmpty {
             return nil
         }
         
@@ -106,21 +106,21 @@ public class IMGLYPhotoProcessor {
     
     #if os(iOS)
     
-    public class func processWithUIImage(image: UIImage, filters: [CIFilter]) -> UIImage? {
+    open class func processWithUIImage(_ image: UIImage, filters: [CIFilter]) -> UIImage? {
         let imageOrientation = image.imageOrientation
         guard let coreImage = CIImage(image: image) else {
             return nil
         }
         
         let filteredCIImage = processWithCIImage(coreImage, filters: filters)
-        let filteredCGImage = CIContext(options: nil).createCGImage(filteredCIImage!, fromRect: filteredCIImage!.extent)
-        return UIImage(CGImage: filteredCGImage, scale: 1.0, orientation: imageOrientation)
+        let filteredCGImage = CIContext(options: nil).createCGImage(filteredCIImage!, from: filteredCIImage!.extent)
+        return UIImage(cgImage: filteredCGImage!, scale: 1.0, orientation: imageOrientation)
     }
     
     #elseif os(OSX)
 
     public class func processWithNSImage(image: NSImage, filters: [CIFilter]) -> NSImage? {
-        if let tiffRepresentation = image.TIFFRepresentation, image = CIImage(data: tiffRepresentation) {
+        if let tiffRepresentation = image.TIFFRepresentation, let image = CIImage(data: tiffRepresentation) {
             let filteredCIImage = processWithCIImage(image, filters: filters)
             
             if let filteredCIImage = filteredCIImage {

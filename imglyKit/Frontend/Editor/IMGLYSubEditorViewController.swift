@@ -11,12 +11,12 @@ import UIKit
 public typealias IMGLYSubEditorCompletionBlock = (UIImage?, IMGLYFixedFilterStack) -> (Void)
 public typealias IMGLYPreviewImageGenerationCompletionBlock = () -> (Void)
 
-public class IMGLYSubEditorViewController: IMGLYEditorViewController {
+open class IMGLYSubEditorViewController: IMGLYEditorViewController {
     
     // MARK: - Properties
     
-    public let fixedFilterStack: IMGLYFixedFilterStack
-    public var completionHandler: IMGLYSubEditorCompletionBlock?
+    open let fixedFilterStack: IMGLYFixedFilterStack
+    open var completionHandler: IMGLYSubEditorCompletionBlock?
     
     // MARK: - Initializers
     
@@ -31,20 +31,20 @@ public class IMGLYSubEditorViewController: IMGLYEditorViewController {
     
     // MARK: - EditorViewController
     
-    public override func tappedDone(sender: UIBarButtonItem?) {
+    open override func tappedDone(_ sender: UIBarButtonItem?) {
         completionHandler?(previewImageView.image, fixedFilterStack)
-        navigationController?.popViewControllerAnimated(true)
+        navigationController?.popViewController(animated: true)
     }
     
     // MARK: - Helpers
     
-    public func updatePreviewImageWithCompletion(completionHandler: IMGLYPreviewImageGenerationCompletionBlock?) {
+    open func updatePreviewImageWithCompletion(_ completionHandler: IMGLYPreviewImageGenerationCompletionBlock?) {
         if let lowResolutionImage = self.lowResolutionImage {
             updating = true
-            dispatch_async(PhotoProcessorQueue) {
+            PhotoProcessorQueue.async {
                 let processedImage = IMGLYPhotoProcessor.processWithUIImage(lowResolutionImage, filters: self.fixedFilterStack.activeFilters)
                 
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.previewImageView.image = processedImage
                     self.updating = false
                     completionHandler?()

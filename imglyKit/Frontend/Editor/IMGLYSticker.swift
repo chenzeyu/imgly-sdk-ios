@@ -8,9 +8,9 @@
 
 import UIKit
 
-public class IMGLYSticker: NSObject {
-    public let image: UIImage
-    public let thumbnail: UIImage?
+open class IMGLYSticker: NSObject {
+    open let image: UIImage
+    open let thumbnail: UIImage?
     
     public init(image: UIImage, thumbnail: UIImage?) {
         self.image = image

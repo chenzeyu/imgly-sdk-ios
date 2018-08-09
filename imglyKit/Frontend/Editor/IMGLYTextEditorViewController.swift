@@ -13,63 +13,63 @@ private let TextFieldHeight = CGFloat(40)
 private let TextLabelInitialMargin = CGFloat(40)
 private let MinimumFontSize = CGFloat(12.0)
 
-public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
+open class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Properties
     
-    private var textColor = UIColor.whiteColor()
-    private var fontName = ""
-    private var currentTextSize = CGFloat(0)
-    private var maximumFontSize = CGFloat(0)
-    private var panOffset = CGPointZero
-    private var fontSizeAtPinchBegin = CGFloat(0)
-    private var distanceAtPinchBegin = CGFloat(0)
-    private var beganTwoFingerPitch = false
+    fileprivate var textColor = UIColor.white
+    fileprivate var fontName = ""
+    fileprivate var currentTextSize = CGFloat(0)
+    fileprivate var maximumFontSize = CGFloat(0)
+    fileprivate var panOffset = CGPoint.zero
+    fileprivate var fontSizeAtPinchBegin = CGFloat(0)
+    fileprivate var distanceAtPinchBegin = CGFloat(0)
+    fileprivate var beganTwoFingerPitch = false
     
-    public private(set) lazy var textColorSelectorView: IMGLYTextColorSelectorView = {
+    open fileprivate(set) lazy var textColorSelectorView: IMGLYTextColorSelectorView = {
         let view = IMGLYTextColorSelectorView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.menuDelegate = self
         return view
         }()
     
-    public private(set) lazy var textClipView: UIView = {
+    open fileprivate(set) lazy var textClipView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
         return view
         }()
     
-    public private(set) lazy var textField: UITextField = {
+    open fileprivate(set) lazy var textField: UITextField = {
         let textField = UITextField()
         textField.delegate = self
         textField.backgroundColor = UIColor(white:0.0, alpha:0.5)
         textField.text = ""
         textField.textColor = self.textColor
         textField.clipsToBounds = false
-        textField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        textField.returnKeyType = UIReturnKeyType.Done
+        textField.contentVerticalAlignment = UIControlContentVerticalAlignment.center
+        textField.returnKeyType = UIReturnKeyType.done
         return textField
         }()
     
-    public private(set) lazy var textLabel: UILabel = {
+    open fileprivate(set) lazy var textLabel: UILabel = {
         let label = UILabel()
         label.alpha = 0.0
         label.backgroundColor = UIColor(white:0.0, alpha:0.0)
         label.textColor = self.textColor
-        label.textAlignment = NSTextAlignment.Center
+        label.textAlignment = NSTextAlignment.center
         label.clipsToBounds = true
-        label.userInteractionEnabled = true
+        label.isUserInteractionEnabled = true
         return label
         }()
     
-    public private(set) lazy var fontSelectorContainerView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: .Dark)
+    open fileprivate(set) lazy var fontSelectorContainerView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .dark)
         let view = UIVisualEffectView(effect: blurEffect)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
         }()
     
-    public private(set) lazy var fontSelectorView: IMGLYFontSelectorView = {
+    open fileprivate(set) lazy var fontSelectorView: IMGLYFontSelectorView = {
         let selector = IMGLYFontSelectorView()
         selector.translatesAutoresizingMaskIntoConstraints = false
         selector.selectorDelegate = self
@@ -79,20 +79,20 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
     // MAKR: - Initializers
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - UIViewController
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         navigationItem.title = NSLocalizedString("text-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
         
         IMGLYInstanceFactory.fontImporter().importFonts()
         
-        navigationItem.rightBarButtonItem?.enabled = false
+        navigationItem.rightBarButtonItem?.isEnabled = false
         configureColorSelectorView()
         configureTextClipView()
         configureTextField()
@@ -102,15 +102,15 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
         configureGestureRecognizers()
     }
     
-    override public func viewDidLayoutSubviews() {
+    override open func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        textClipView.frame = view.convertRect(previewImageView.visibleImageFrame, fromView: previewImageView)
+        textClipView.frame = view.convert(previewImageView.visibleImageFrame, from: previewImageView)
     }
     
     // MARK: - SubEditorViewController
     
-    public override func tappedDone(sender: UIBarButtonItem?) {
+    open override func tappedDone(_ sender: UIBarButtonItem?) {
         fixedFilterStack.textFilter.text = textLabel.text ?? ""
         fixedFilterStack.textFilter.color = textColor
         fixedFilterStack.textFilter.fontName = fontName
@@ -124,65 +124,65 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Configuration
     
-    private func configureColorSelectorView() {
+    fileprivate func configureColorSelectorView() {
         bottomContainerView.addSubview(textColorSelectorView)
 
         let views = [
             "textColorSelectorView" : textColorSelectorView
         ]
         
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[textColorSelectorView]|", options: [], metrics: nil, views: views))
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[textColorSelectorView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[textColorSelectorView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[textColorSelectorView]|", options: [], metrics: nil, views: views))
     }
     
-    private func configureTextClipView() {
+    fileprivate func configureTextClipView() {
         view.addSubview(textClipView)
     }
     
-    private func configureTextField() {
+    fileprivate func configureTextField() {
         view.addSubview(textField)
         textField.frame = CGRect(x: 0, y: view.bounds.size.height, width: view.bounds.size.width, height: TextFieldHeight)
     }
     
-    private func configureTextLabel() {
+    fileprivate func configureTextLabel() {
         textClipView.addSubview(textLabel)
     }
     
-    private func configureFontSelectorView() {
+    fileprivate func configureFontSelectorView() {
         view.addSubview(fontSelectorContainerView)
         fontSelectorContainerView.contentView.addSubview(fontSelectorView)
         
         let views = [
             "fontSelectorContainerView" : fontSelectorContainerView,
             "fontSelectorView" : fontSelectorView
-        ]
+        ] as [String : Any]
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[fontSelectorContainerView]|", options: [], metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[fontSelectorContainerView]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[fontSelectorContainerView]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[fontSelectorContainerView]|", options: [], metrics: nil, views: views))
         
-        fontSelectorContainerView.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[fontSelectorView]|", options: [], metrics: nil, views: views))
-        fontSelectorContainerView.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[fontSelectorView]|", options: [], metrics: nil, views: views))
+        fontSelectorContainerView.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[fontSelectorView]|", options: [], metrics: nil, views: views))
+        fontSelectorContainerView.contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[fontSelectorView]|", options: [], metrics: nil, views: views))
     }
     
-    private func registerForKeyboardNotifications() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillChangeFrame:", name: UIKeyboardWillChangeFrameNotification, object: nil)
+    fileprivate func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(IMGLYTextEditorViewController.keyboardWillChangeFrame(_:)), name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
     }
     
-    private func configureGestureRecognizers() {
-        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "handlePan:")
+    fileprivate func configureGestureRecognizers() {
+        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(IMGLYTextEditorViewController.handlePan(_:)))
         textLabel.addGestureRecognizer(panGestureRecognizer)
 
-        let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: "handlePinch:")
+        let pinchGestureRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(IMGLYTextEditorViewController.handlePinch(_:)))
         view.addGestureRecognizer(pinchGestureRecognizer)
     }
     
     // MARK: - Gesture Handling
     
-    @objc private func handlePan(gestureRecognizer: UIPanGestureRecognizer) {
-        let location = gestureRecognizer.locationInView(textClipView)
+    @objc fileprivate func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+        let location = gestureRecognizer.location(in: textClipView)
         
-        if gestureRecognizer.state == .Began {
-            panOffset = gestureRecognizer.locationInView(textLabel)
+        if gestureRecognizer.state == .began {
+            panOffset = gestureRecognizer.location(in: textLabel)
         }
         
         var frame = textLabel.frame
@@ -191,15 +191,15 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
         textLabel.frame = frame
     }
     
-    @objc private func handlePinch(gestureRecognizer: UIPinchGestureRecognizer) {
-        if gestureRecognizer.state == .Began {
+    @objc fileprivate func handlePinch(_ gestureRecognizer: UIPinchGestureRecognizer) {
+        if gestureRecognizer.state == .began {
             fontSizeAtPinchBegin = currentTextSize
             beganTwoFingerPitch = false
         }
         
-        if gestureRecognizer.numberOfTouches() > 1 {
-            let point1 = gestureRecognizer.locationOfTouch(0, inView:view)
-            let point2 = gestureRecognizer.locationOfTouch(1, inView:view)
+        if gestureRecognizer.numberOfTouches > 1 {
+            let point1 = gestureRecognizer.location(ofTouch: 0, in:view)
+            let point2 = gestureRecognizer.location(ofTouch: 1, in:view)
             if  !beganTwoFingerPitch {
                 beganTwoFingerPitch = true
                 distanceAtPinchBegin = calculateNewFontSizeBasedOnDistanceBetweenPoint(point1, and: point2)
@@ -216,44 +216,44 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Notification Handling
     
-    @objc private func keyboardWillChangeFrame(notification: NSNotification) {
+    @objc fileprivate func keyboardWillChangeFrame(_ notification: Notification) {
         if let frameValue = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardFrame = view.convertRect(frameValue.CGRectValue(), fromView: nil)
+            let keyboardFrame = view.convert(frameValue.cgRectValue, from: nil)
             textField.frame = CGRect(x: 0, y: view.frame.size.height - keyboardFrame.size.height - TextFieldHeight, width: view.frame.size.width, height: TextFieldHeight)
         }
     }
     
     // MARK: - Helpers
     
-    private func hideTextField() {
-        UIView.animateWithDuration(0.2) {
+    fileprivate func hideTextField() {
+        UIView.animate(withDuration: 0.2, animations: {
             self.textField.alpha = 0.0
-        }
+        }) 
     }
     
-    private func showTextLabel() {
-        UIView.animateWithDuration(0.2) {
+    fileprivate func showTextLabel() {
+        UIView.animate(withDuration: 0.2, animations: {
             self.textLabel.alpha = 1.0
-        }
+        }) 
     }
     
-    private func calculateInitialFontSize() {
+    fileprivate func calculateInitialFontSize() {
         if let text = textLabel.text {
             currentTextSize = 1.0
             
-            var size = CGSizeZero
+            var size = CGSize.zero
             if !text.isEmpty {
                 repeat {
                     currentTextSize += 1.0
                     let font = UIFont(name: fontName, size: currentTextSize)
-                    size = text.sizeWithAttributes([ NSFontAttributeName: font as! AnyObject ])
+                    size = text.size(attributes: [ NSFontAttributeName: font as AnyObject ])
                 } while (size.width < (view.frame.size.width - TextLabelInitialMargin))
             }
         }
     }
     
-    private func calculateMaximumFontSize() {
-        var size = CGSizeZero
+    fileprivate func calculateMaximumFontSize() {
+        var size = CGSize.zero
         
         if let text = textLabel.text {
             if !text.isEmpty {
@@ -261,13 +261,13 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
                 repeat {
                     maximumFontSize += 1.0
                     let font = UIFont(name: fontName, size: maximumFontSize)
-                    size = text.sizeWithAttributes([ NSFontAttributeName: font as! AnyObject ])
+                    size = text.size(attributes: [ NSFontAttributeName: font as AnyObject ])
                 } while (size.width < self.view.frame.size.width)
             }
         }
     }
     
-    private func setInitialTextLabelSize() {
+    fileprivate func setInitialTextLabelSize() {
         calculateInitialFontSize()
         calculateMaximumFontSize()
         
@@ -277,13 +277,13 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
         textLabel.frame.origin.y = -textLabel.frame.size.height / 2.0 + textClipView.frame.height / 2.0
     }
     
-    private func calculateNewFontSizeBasedOnDistanceBetweenPoint(point1: CGPoint, and point2: CGPoint) -> CGFloat {
+    fileprivate func calculateNewFontSizeBasedOnDistanceBetweenPoint(_ point1: CGPoint, and point2: CGPoint) -> CGFloat {
         let diffX = point1.x - point2.x
         let diffY = point1.y - point2.y
         return sqrt(diffX * diffX + diffY  * diffY)
     }
     
-    private func updateTextLabelFrameForCurrentFont() {
+    fileprivate func updateTextLabelFrameForCurrentFont() {
         // resize and keep the text centered
         let frame = textLabel.frame
         textLabel.sizeToFit()
@@ -294,7 +294,7 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
         textLabel.frame.origin.y += (diffY / 2.0)
     }
     
-    private func transformedTextFrame() -> CGRect {
+    fileprivate func transformedTextFrame() -> CGRect {
         var origin = textLabel.frame.origin
         origin.x = origin.x / previewImageView.visibleImageFrame.size.width
         origin.y = origin.y / previewImageView.visibleImageFrame.size.height
@@ -308,7 +308,7 @@ public class IMGLYTextEditorViewController: IMGLYSubEditorViewController {
 }
 
 extension IMGLYTextEditorViewController: IMGLYTextColorSelectorViewDelegate {
-    public func textColorSelectorView(selectorView: IMGLYTextColorSelectorView, didSelectColor color: UIColor) {
+    public func textColorSelectorView(_ selectorView: IMGLYTextColorSelectorView, didSelectColor color: UIColor) {
         textColor = color
         textField.textColor = color
         textLabel.textColor = color
@@ -316,28 +316,28 @@ extension IMGLYTextEditorViewController: IMGLYTextColorSelectorViewDelegate {
 }
 
 extension IMGLYTextEditorViewController: UITextFieldDelegate {
-    public func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         return true
     }
     
-    public func textFieldShouldEndEditing(textField: UITextField) -> Bool {
+    public func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         hideTextField()
-        textLabel.text = textField.text?.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        textLabel.text = textField.text?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         setInitialTextLabelSize()
         showTextLabel()
-        navigationItem.rightBarButtonItem?.enabled = true
+        navigationItem.rightBarButtonItem?.isEnabled = true
         return true
     }
     
-    public func textFieldShouldReturn(textField: UITextField) -> Bool {
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
 }
 
 extension IMGLYTextEditorViewController: IMGLYFontSelectorViewDelegate {
-    public func fontSelectorView(fontSelectorView: IMGLYFontSelectorView, didSelectFontWithName fontName: String) {
+    public func fontSelectorView(_ fontSelectorView: IMGLYFontSelectorView, didSelectFontWithName fontName: String) {
         fontSelectorContainerView.removeFromSuperview()
         self.fontName = fontName
         textField.font = UIFont(name: fontName, size: FontSizeInTextField)

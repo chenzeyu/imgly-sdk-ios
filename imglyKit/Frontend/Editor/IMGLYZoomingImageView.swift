@@ -8,11 +8,11 @@
 
 import UIKit
 
-public class IMGLYZoomingImageView: UIScrollView {
+open class IMGLYZoomingImageView: UIScrollView {
     
     // MARK: - Properties
     
-    public var image: UIImage? {
+    open var image: UIImage? {
         get {
             return imageView.image
         }
@@ -26,18 +26,16 @@ public class IMGLYZoomingImageView: UIScrollView {
         }
     }
     
-    private let imageView = UIImageView()
-    private var initialZoomScaleWasSet = false
-    public lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: "doubleTapped:")
+    fileprivate let imageView = UIImageView()
+    fileprivate var initialZoomScaleWasSet = false
+    open lazy var doubleTapGestureRecognizer: UITapGestureRecognizer = {
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(IMGLYZoomingImageView.doubleTapped(_:)))
         gestureRecognizer.numberOfTapsRequired = 2
         return gestureRecognizer
         }()
     
-    public var visibleImageFrame: CGRect {
-        var visibleImageFrame = bounds
-        visibleImageFrame.intersectInPlace(imageView.frame)
-        return visibleImageFrame
+    open var visibleImageFrame: CGRect {
+        return bounds.intersection(imageView.frame)
     }
     
     // MARK: - Initializers
@@ -52,7 +50,7 @@ public class IMGLYZoomingImageView: UIScrollView {
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         addSubview(imageView)
         addGestureRecognizer(doubleTapGestureRecognizer)
         
@@ -61,13 +59,13 @@ public class IMGLYZoomingImageView: UIScrollView {
         maximumZoomScale = 2
         scrollsToTop = false
         decelerationRate = UIScrollViewDecelerationRateFast
-        exclusiveTouch = true
+        isExclusiveTouch = true
         delegate = self
     }
     
     // MARK: - UIView
     
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
         if imageView.image != nil {
@@ -81,23 +79,23 @@ public class IMGLYZoomingImageView: UIScrollView {
     
     // MARK: - Actions
     
-    @objc private func doubleTapped(gestureRecognizer: UITapGestureRecognizer) {
-        let location = gestureRecognizer.locationInView(imageView)
+    @objc fileprivate func doubleTapped(_ gestureRecognizer: UITapGestureRecognizer) {
+        let location = gestureRecognizer.location(in: imageView)
         
         if zoomScale > minimumZoomScale {
             setZoomScale(minimumZoomScale, animated: true)
         } else {
-            zoomToRect(CGRect(x: location.x, y: location.y, width: 1, height: 1), animated: true)
+            zoom(to: CGRect(x: location.x, y: location.y, width: 1, height: 1), animated: true)
         }
     }
 }
 
 extension IMGLYZoomingImageView: UIScrollViewDelegate {
-    public func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
     }
     
-    public func scrollViewDidZoom(scrollView: UIScrollView) {
+    public func scrollViewDidZoom(_ scrollView: UIScrollView) {
         let offsetX = max((bounds.size.width - contentSize.width) * 0.5, 0)
         let offsetY = max((bounds.size.height - contentSize.height) * 0.5, 0)
         

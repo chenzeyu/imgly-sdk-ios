@@ -15,25 +15,25 @@ import CoreImage
 *   That way we make sure the order of filters stays the same, and we don't need to take
 *   care about creating the single filters.
 */
-public class IMGLYFixedFilterStack: NSObject {
+open class IMGLYFixedFilterStack: NSObject {
     
     // MARK: - Properties
     
-    public var enhancementFilter: IMGLYEnhancementFilter = {
+    open var enhancementFilter: IMGLYEnhancementFilter = {
         let filter = IMGLYInstanceFactory.enhancementFilter()
-        filter.enabled = false
+        filter.enabledVal = false
         filter.storeEnhancedImage = true
         return filter
         }()
     
-    public var orientationCropFilter = IMGLYInstanceFactory.orientationCropFilter()
-    public var effectFilter = IMGLYInstanceFactory.effectFilterWithType(IMGLYFilterType.None)
-    public var brightnessFilter = IMGLYInstanceFactory.colorAdjustmentFilter()
-    public var tiltShiftFilter = IMGLYInstanceFactory.tiltShiftFilter()
-    public var textFilter = IMGLYInstanceFactory.textFilter()
-    public var stickerFilters = [CIFilter]()
+    open var orientationCropFilter = IMGLYInstanceFactory.orientationCropFilter()
+    open var effectFilter = IMGLYInstanceFactory.effectFilterWithType(IMGLYFilterType.none)
+    open var brightnessFilter = IMGLYInstanceFactory.colorAdjustmentFilter()
+    open var tiltShiftFilter = IMGLYInstanceFactory.tiltShiftFilter()
+    open var textFilter = IMGLYInstanceFactory.textFilter()
+    open var stickerFilters = [CIFilter]()
     
-    public var activeFilters: [CIFilter] {
+    open var activeFilters: [CIFilter] {
         var activeFilters: [CIFilter] = [enhancementFilter, orientationCropFilter, tiltShiftFilter, effectFilter, brightnessFilter, textFilter]
         activeFilters += stickerFilters
         
@@ -48,14 +48,14 @@ public class IMGLYFixedFilterStack: NSObject {
 }
 
 extension IMGLYFixedFilterStack: NSCopying {
-    public func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = self.dynamicType.init()
-        copy.enhancementFilter = enhancementFilter.copyWithZone(zone) as! IMGLYEnhancementFilter
-        copy.orientationCropFilter = orientationCropFilter.copyWithZone(zone) as! IMGLYOrientationCropFilter
-        copy.effectFilter = effectFilter.copyWithZone(zone) as! IMGLYResponseFilter
-        copy.brightnessFilter = brightnessFilter.copyWithZone(zone) as! IMGLYContrastBrightnessSaturationFilter
-        copy.tiltShiftFilter = tiltShiftFilter.copyWithZone(zone) as! IMGLYTiltshiftFilter
-        copy.textFilter = textFilter.copyWithZone(zone) as! IMGLYTextFilter
+    public func copy(with zone: NSZone?) -> Any {
+        let copy = type(of: self).init()
+        copy.enhancementFilter = enhancementFilter.copy(with: zone) as! IMGLYEnhancementFilter
+        copy.orientationCropFilter = orientationCropFilter.copy(with: zone) as! IMGLYOrientationCropFilter
+        copy.effectFilter = effectFilter.copy(with: zone) as! IMGLYResponseFilter
+        copy.brightnessFilter = brightnessFilter.copy(with: zone) as! IMGLYContrastBrightnessSaturationFilter
+        copy.tiltShiftFilter = tiltShiftFilter.copy(with: zone) as! IMGLYTiltshiftFilter
+        copy.textFilter = textFilter.copy(with: zone) as! IMGLYTextFilter
         copy.stickerFilters = NSArray(array: stickerFilters, copyItems: true) as! [CIFilter]
         return copy
     }

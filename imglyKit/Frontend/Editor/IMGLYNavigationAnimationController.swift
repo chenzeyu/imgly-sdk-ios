@@ -12,34 +12,34 @@ class IMGLYNavigationAnimationController: NSObject {
 }
 
 extension IMGLYNavigationAnimationController: UIViewControllerAnimatedTransitioning {
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.2
     }
     
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)
         
         if let fromViewController = fromViewController, let toViewController = toViewController {
             let toView = toViewController.view
             let fromView = fromViewController.view
             
-            let containerView = transitionContext.containerView()
-            containerView?.addSubview(toView)
-            containerView?.sendSubviewToBack(toView)
+            let containerView = transitionContext.containerView
+            containerView.addSubview(toView!)
+            containerView.sendSubview(toBack: toView!)
             
-            let duration = transitionDuration(transitionContext)
-            UIView.animateWithDuration(duration, animations: {
-                fromView.alpha = 0
+            let duration = transitionDuration(using: transitionContext)
+            UIView.animate(withDuration: duration, animations: {
+                fromView?.alpha = 0
                 }, completion: { finished in
-                    if transitionContext.transitionWasCancelled() {
-                        fromView.alpha = 1
+                    if transitionContext.transitionWasCancelled {
+                        fromView?.alpha = 1
                     } else {
-                        fromView.removeFromSuperview()
-                        fromView.alpha = 1
+                        fromView?.removeFromSuperview()
+                        fromView?.alpha = 1
                     }
                     
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             })
         }
     }

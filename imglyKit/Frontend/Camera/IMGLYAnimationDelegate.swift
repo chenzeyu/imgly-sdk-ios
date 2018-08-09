@@ -10,21 +10,21 @@ import QuartzCore
 
 public typealias IMGLYAnimationDelegateBlock = (Bool) -> (Void)
 
-public class IMGLYAnimationDelegate: NSObject {
+open class IMGLYAnimationDelegate: NSObject {
     
     // MARK: - Properties
     
-    public let block: IMGLYAnimationDelegateBlock
+    open let block: IMGLYAnimationDelegateBlock
     
     // MARK: - Initializers
     
-    init(block: IMGLYAnimationDelegateBlock) {
+    init(block: @escaping IMGLYAnimationDelegateBlock) {
         self.block = block
     }
     
     // MARK: - Animation Delegate
     
-    public override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    open func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         block(flag)
     }
 }

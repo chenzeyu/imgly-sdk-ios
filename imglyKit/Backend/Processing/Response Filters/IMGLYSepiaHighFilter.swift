@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYSepiaHighFilter: IMGLYResponseFilter {
+open class IMGLYSepiaHighFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "SepiaHigh")
         self.imgly_displayName = "Sepia High"
@@ -18,9 +18,9 @@ public class IMGLYSepiaHighFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.SepiaHigh
+            return IMGLYFilterType.sepiaHigh
         }
     }
 }

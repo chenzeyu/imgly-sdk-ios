@@ -11,41 +11,41 @@ import UIKit
 private let ImageSize = CGSize(width: 36, height: 36)
 private let ImageCaptionMargin = 2
 
-public class IMGLYImageCaptionButton: UIControl {
+open class IMGLYImageCaptionButton: UIControl {
     
     // MARK: - Properties
     
-    public private(set) lazy var textLabel: UILabel = {
+    open fileprivate(set) lazy var textLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFontOfSize(11)
-        label.textColor = UIColor.whiteColor()
+        label.font = UIFont.systemFont(ofSize: 11)
+        label.textColor = UIColor.white
         return label
         }()
     
-    public private(set) lazy var imageView: UIImageView = {
+    open fileprivate(set) lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .Center
+        imageView.contentMode = .center
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
         }()
     
-    public override var highlighted: Bool {
+    open override var isHighlighted: Bool {
         didSet {
-            if highlighted {
+            if isHighlighted {
                 backgroundColor = UIColor(white: 1, alpha: 0.2)
-            } else if !selected {
-                backgroundColor = UIColor.clearColor()
+            } else if !isSelected {
+                backgroundColor = UIColor.clear
             }
         }
     }
     
-    public override var selected: Bool {
+    open override var isSelected: Bool {
         didSet {
-            if selected {
+            if isSelected {
                 backgroundColor = UIColor(white: 1, alpha: 0.2)
-            } else if !highlighted {
-                backgroundColor = UIColor.clearColor()
+            } else if !isHighlighted {
+                backgroundColor = UIColor.clear
             }
         }
     }
@@ -62,16 +62,16 @@ public class IMGLYImageCaptionButton: UIControl {
         commonInit()
     }
     
-    private func commonInit() {
-        backgroundColor = UIColor.clearColor()
+    fileprivate func commonInit() {
+        backgroundColor = UIColor.clear
         configureViews()
     }
     
     // MARK: - Configuration
     
-    private func configureViews() {
+    fileprivate func configureViews() {
         let containerView = UIView()
-        containerView.userInteractionEnabled = false
+        containerView.isUserInteractionEnabled = false
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(imageView)
         containerView.addSubview(textLabel)
@@ -84,40 +84,40 @@ public class IMGLYImageCaptionButton: UIControl {
         ]
         
         let metrics: [ String: AnyObject ] = [
-            "imageHeight" : ImageSize.height,
-            "imageWidth" : ImageSize.width,
-            "imageCaptionMargin" : ImageCaptionMargin
+            "imageHeight" : ImageSize.height as AnyObject,
+            "imageWidth" : ImageSize.width as AnyObject,
+            "imageCaptionMargin" : ImageCaptionMargin as AnyObject
         ]
         
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-            "|-(>=0)-[imageView(==imageWidth)]-(>=0)-|",
+        containerView.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "|-(>=0)-[imageView(==imageWidth)]-(>=0)-|",
             options: [],
             metrics: metrics,
             views: views))
         
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-            "|-(>=0)-[textLabel]-(>=0)-|",
+        containerView.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "|-(>=0)-[textLabel]-(>=0)-|",
             options: [],
             metrics: metrics,
             views: views))
         
-        containerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-            "V:|[imageView(==imageHeight)]-(imageCaptionMargin)-[textLabel]|",
-            options: .AlignAllCenterX,
+        containerView.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|[imageView(==imageHeight)]-(imageCaptionMargin)-[textLabel]|",
+            options: .alignAllCenterX,
             metrics: metrics,
             views: views))
         
-        addConstraint(NSLayoutConstraint(item: containerView, attribute: .CenterX, relatedBy: .Equal, toItem: self, attribute: .CenterX, multiplier: 1, constant: 0))
-        addConstraint(NSLayoutConstraint(item: containerView, attribute: .CenterY, relatedBy: .Equal, toItem: self, attribute: .CenterY, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
+        addConstraint(NSLayoutConstraint(item: containerView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
     }
     
     // MARK: - UIView
     
-    public override func sizeThatFits(size: CGSize) -> CGSize {
-        return systemLayoutSizeFittingSize(size)
+    open override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return systemLayoutSizeFitting(size)
     }
     
-    public override class func requiresConstraintBasedLayout() -> Bool {
+    open override class var requiresConstraintBasedLayout : Bool {
         return true
     }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYX400Filter: IMGLYResponseFilter {
+open class IMGLYX400Filter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "X400")
         self.imgly_displayName = "X400"
@@ -18,9 +18,9 @@ public class IMGLYX400Filter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.X400
+            return IMGLYFilterType.x400
         }
     }
 }

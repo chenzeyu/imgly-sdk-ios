@@ -41,5 +41,15 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>NSCameraUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs to have permission to take picture from Camera.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs to have permission to access your location.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>$(PRODUCT_NAME) need to record your Voice.</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs to have permission to add Pictures/Videos into Photo library.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>$(PRODUCT_NAME) needs to have permission to select Pictures from Photo library.</string>
 </dict>
 </plist>

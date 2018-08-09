@@ -11,14 +11,14 @@ import UIKit
 public typealias IMGLYActionButtonHandler = () -> (Void)
 public typealias IMGLYShowSelectionBlock = () -> (Bool)
 
-public class IMGLYActionButton {
+open class IMGLYActionButton {
     let title: String?
     let image: UIImage?
     let selectedImage: UIImage?
     let handler: IMGLYActionButtonHandler
     let showSelection: IMGLYShowSelectionBlock?
         
-    init(title: String?, image: UIImage?, selectedImage: UIImage? = nil, handler: IMGLYActionButtonHandler, showSelection: IMGLYShowSelectionBlock? = nil) {
+    init(title: String?, image: UIImage?, selectedImage: UIImage? = nil, handler: @escaping IMGLYActionButtonHandler, showSelection: IMGLYShowSelectionBlock? = nil) {
         self.title = title
         self.image = image
         self.selectedImage = selectedImage

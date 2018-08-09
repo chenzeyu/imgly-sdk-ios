@@ -16,7 +16,7 @@ import QuartzCore
 /**
 *  A filter that does nothing. It is used within the fixed-filterstack.
 */
-public class IMGLYNoneFilter : IMGLYResponseFilter {
+open class IMGLYNoneFilter : IMGLYResponseFilter {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -27,7 +27,7 @@ public class IMGLYNoneFilter : IMGLYResponseFilter {
     }
     
     /// Returns a CIImage object that encapsulates the operations configured in the filter. (read-only)
-    public override var outputImage: CIImage? {
+    open override var outputImage: CIImage? {
         guard let inputImage = inputImage else {
             return nil
         }

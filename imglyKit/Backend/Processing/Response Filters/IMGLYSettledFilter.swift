@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYSettledFilter: IMGLYResponseFilter {
+open class IMGLYSettledFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "Settled")
         self.imgly_displayName = "Settled"
@@ -18,9 +18,9 @@ public class IMGLYSettledFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.Settled
+            return IMGLYFilterType.settled
         }
     }
 }

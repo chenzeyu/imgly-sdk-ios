@@ -19,27 +19,27 @@ import QuartzCore
   and a recalculation is foced. This behaviour is inactive by default, and
   can be activated by setting 'storeEnhancedImage' to true.
 */
-public class IMGLYEnhancementFilter : CIFilter {
+open class IMGLYEnhancementFilter : CIFilter {
     /// A CIImage object that serves as input for the filter.
-    public var inputImage:CIImage?
+    open var inputImage:CIImage?
     
     #if os(iOS)
     /// If this is set to false, the original image is returned.
-    public var enabled = true
+    open var enabledVal = true
     #endif
     
     /// If this is set to true, the enhanced image is kept until reset is called.
-    public var storeEnhancedImage = false
+    open var storeEnhancedImage = false
     
-    private var enhancedImage: CIImage? = nil
+    fileprivate var enhancedImage: CIImage? = nil
     
     /// Returns a CIImage object that encapsulates the operations configured in the filter. (read-only)
-    public override var outputImage: CIImage? {
+    open override var outputImage: CIImage? {
         guard let inputImage = inputImage else {
             return nil
         }
         
-        if !enabled {
+        if !enabledVal {
             return inputImage
         }
         
@@ -51,7 +51,7 @@ public class IMGLYEnhancementFilter : CIFilter {
         
         
         var intermediateImage: CIImage? = inputImage
-        let filters = intermediateImage?.autoAdjustmentFiltersWithOptions([kCIImageAutoAdjustRedEye:NSNumber(bool: false)])
+        let filters = intermediateImage?.autoAdjustmentFilters(options: [kCIImageAutoAdjustRedEye:NSNumber(value: false as Bool)])
         for filter in filters ?? [] {
             filter.setValue(inputImage, forKey: kCIInputImageKey)
             intermediateImage = filter.outputImage
@@ -64,18 +64,18 @@ public class IMGLYEnhancementFilter : CIFilter {
         return intermediateImage
     }
     
-    public func reset() {
+    open func reset() {
         enhancedImage = nil
     }
 }
 
 extension IMGLYEnhancementFilter {
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = super.copyWithZone(zone) as! IMGLYEnhancementFilter
-        copy.inputImage = inputImage?.copyWithZone(zone) as? CIImage
-        copy.enabled = enabled
+    open override func copy(with zone: NSZone?) -> Any {
+        let copy = super.copy(with: zone) as! IMGLYEnhancementFilter
+        copy.inputImage = inputImage?.copy(with: zone) as? CIImage
+        copy.enabledVal = enabledVal
         copy.storeEnhancedImage = storeEnhancedImage
-        copy.enhancedImage = enhancedImage?.copyWithZone(zone) as? CIImage
+        copy.enhancedImage = enhancedImage?.copy(with: zone) as? CIImage
         return copy
     }
 }
