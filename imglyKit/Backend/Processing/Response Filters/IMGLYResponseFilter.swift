@@ -27,26 +27,26 @@ import QuartzCore
   In order to use the filter, the response-image is tranfered into a color-cube-map, that then
   can be used as input for a 'CIColorCube' filter, provided by core-image.
 */
-public class IMGLYResponseFilter: CIFilter, IMGLYFilterTypeProtocol {
+open class IMGLYResponseFilter: CIFilter, IMGLYFilterTypeProtocol {
     /// A CIImage object that serves as input for the filter.
-    public var inputImage: CIImage?
-    public var inputIntensity = NSNumber(float: 1) {
+    open var inputImage: CIImage?
+    open var inputIntensity = NSNumber(value: 1 as Float) {
         didSet {
             colorCubeData = nil
         }
     }
-    public let responseName: String
+    open let responseName: String
 
     /// Returns the according filter type of the response filter.
-    public var filterType: IMGLYFilterType {
-        return .None
+    open var filterType: IMGLYFilterType {
+        return .none
     }
     
-    private var _colorCubeData: NSData?
-    private var colorCubeData: NSData? {
+    fileprivate var _colorCubeData: Data?
+    fileprivate var colorCubeData: Data? {
         get {
             if _colorCubeData == nil {
-                _colorCubeData = LUTToNSDataConverter.colorCubeDataFromLUTNamed(self.responseName, interpolatedWithIdentityLUTNamed: "Identity", withIntensity: self.inputIntensity.floatValue, cacheIdentityLUT: true)
+                _colorCubeData = LUTToNSDataConverter.colorCubeData(fromLUTNamed: self.responseName, interpolatedWithIdentityLUTNamed: "Identity", withIntensity: self.inputIntensity.floatValue, cacheIdentityLUT: true)
             }
             
             return _colorCubeData
@@ -67,7 +67,7 @@ public class IMGLYResponseFilter: CIFilter, IMGLYFilterTypeProtocol {
         super.init(coder: aDecoder)
     }
     
-    public override var outputImage: CIImage? {
+    open override var outputImage: CIImage? {
         guard let inputImage = inputImage else {
             return nil
         }
@@ -75,7 +75,7 @@ public class IMGLYResponseFilter: CIFilter, IMGLYFilterTypeProtocol {
         var outputImage: CIImage?
         
         autoreleasepool {
-            if let colorCubeData = colorCubeData, filter = CIFilter(name: "CIColorCube") {
+            if let colorCubeData = colorCubeData, let filter = CIFilter(name: "CIColorCube") {
                 filter.setValue(colorCubeData, forKey: "inputCubeData")
                 filter.setValue(64, forKey: "inputCubeDimension")
                 filter.setValue(inputImage, forKey: kCIInputImageKey)
@@ -90,9 +90,9 @@ public class IMGLYResponseFilter: CIFilter, IMGLYFilterTypeProtocol {
 }
 
 extension IMGLYResponseFilter {
-    public override func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = super.copyWithZone(zone) as! IMGLYResponseFilter
-        copy.inputImage = inputImage?.copyWithZone(zone) as? CIImage
+    open override func copy(with zone: NSZone?) -> Any {
+        let copy = super.copy(with: zone) as! IMGLYResponseFilter
+        copy.inputImage = inputImage?.copy(with: zone) as? CIImage
         copy.inputIntensity = inputIntensity
         return copy
     }

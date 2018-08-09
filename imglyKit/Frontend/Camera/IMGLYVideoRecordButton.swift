@@ -20,17 +20,17 @@ public final class IMGLYVideoRecordButton: UIControl {
         }
     }
     
-    private lazy var outerLayer: CAShapeLayer = {
+    fileprivate lazy var outerLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
-        layer.strokeColor = UIColor.whiteColor().CGColor
+        layer.strokeColor = UIColor.white.cgColor
         layer.lineWidth = lineWidth
-        layer.fillColor = UIColor.clearColor().CGColor
+        layer.fillColor = UIColor.clear.cgColor
         return layer
         }()
     
-    private lazy var innerLayer: IMGLYShapeLayer = {
+    fileprivate lazy var innerLayer: IMGLYShapeLayer = {
         let layer = IMGLYShapeLayer()
-        layer.fillColor = recordingColor.CGColor
+        layer.fillColor = recordingColor.cgColor
         return layer
         }()
     
@@ -52,21 +52,21 @@ public final class IMGLYVideoRecordButton: UIControl {
     
     // MARK: - Helpers
     
-    private func updateOuterLayer() {
+    fileprivate func updateOuterLayer() {
         let outerRect = bounds.insetBy(dx: IMGLYVideoRecordButton.lineWidth, dy: IMGLYVideoRecordButton.lineWidth)
         outerLayer.frame = bounds
-        outerLayer.path = UIBezierPath(ovalInRect: outerRect).CGPath
+        outerLayer.path = UIBezierPath(ovalIn: outerRect).cgPath
     }
     
-    private func updateInnerLayer() {
+    fileprivate func updateInnerLayer() {
         if recording {
             let innerRect = bounds.insetBy(dx: 0.3 * bounds.size.width, dy: 0.3 * bounds.size.height)
             innerLayer.frame = bounds
-            innerLayer.path = UIBezierPath(roundedRect: innerRect, cornerRadius: 4).CGPath
+            innerLayer.path = UIBezierPath(roundedRect: innerRect, cornerRadius: 4).cgPath
         } else {
             let innerRect = bounds.insetBy(dx: IMGLYVideoRecordButton.lineWidth * 2.5, dy: IMGLYVideoRecordButton.lineWidth * 2.5)
             innerLayer.frame = bounds
-            innerLayer.path = UIBezierPath(roundedRect: innerRect, cornerRadius: innerRect.size.width / 2).CGPath
+            innerLayer.path = UIBezierPath(roundedRect: innerRect, cornerRadius: innerRect.size.width / 2).cgPath
         }
     }
     
@@ -81,23 +81,23 @@ public final class IMGLYVideoRecordButton: UIControl {
     
     // MARK: - UIControl
     
-    public override func beginTrackingWithTouch(touch: UITouch, withEvent event: UIEvent?) -> Bool {
-        let location = touch.locationInView(self)
-        if !innerLayer.containsPoint(location) {
+    public override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        let location = touch.location(in: self)
+        if !innerLayer.contains(location) {
             return false
         }
         
-        innerLayer.fillColor = IMGLYVideoRecordButton.recordingColor.colorWithAlphaComponent(0.3).CGColor
+        innerLayer.fillColor = IMGLYVideoRecordButton.recordingColor.withAlphaComponent(0.3).cgColor
         return true
     }
     
-    public override func endTrackingWithTouch(touch: UITouch?, withEvent event: UIEvent?) {
+    public override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         recording = !recording
-        innerLayer.fillColor = IMGLYVideoRecordButton.recordingColor.CGColor
-        sendActionsForControlEvents(.TouchUpInside)
+        innerLayer.fillColor = IMGLYVideoRecordButton.recordingColor.cgColor
+        sendActions(for: .touchUpInside)
     }
     
-    public override func cancelTrackingWithEvent(event: UIEvent?) {
-        innerLayer.fillColor = IMGLYVideoRecordButton.recordingColor.CGColor
+    public override func cancelTracking(with event: UIEvent?) {
+        innerLayer.fillColor = IMGLYVideoRecordButton.recordingColor.cgColor
     }
 }

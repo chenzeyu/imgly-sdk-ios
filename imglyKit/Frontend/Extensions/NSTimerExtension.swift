@@ -13,7 +13,7 @@ import Foundation
 private class NSTimerActor {
     var block: () -> ()
     
-    init(_ block: () -> ()) {
+    init(_ block: @escaping () -> ()) {
         self.block = block
     }
     
@@ -22,25 +22,25 @@ private class NSTimerActor {
     }
 }
 
-extension NSTimer {
-    class func new(after interval: NSTimeInterval, _ block: () -> ()) -> NSTimer {
+extension Timer {
+    class func new(after interval: TimeInterval, _ block: @escaping () -> ()) -> Timer {
         return new(after: interval, repeats: false, block)
     }
     
-    class func new(after interval: NSTimeInterval, repeats: Bool, _ block: () -> ()) -> NSTimer {
+    class func new(after interval: TimeInterval, repeats: Bool, _ block: @escaping () -> ()) -> Timer {
         let actor = NSTimerActor(block)
-        return self.init(timeInterval: interval, target: actor, selector: "fire", userInfo: nil, repeats: repeats)
+        return self.init(timeInterval: interval, target: actor, selector: #selector(NSTimerActor.fire), userInfo: nil, repeats: repeats)
     }
     
-    class func after(interval: NSTimeInterval, _ block: () -> ()) -> NSTimer {
-        let timer = NSTimer.new(after: interval, block)
-        NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSDefaultRunLoopMode)
+    class func after(_ interval: TimeInterval, _ block: @escaping () -> ()) -> Timer {
+        let timer = Timer.new(after: interval, block)
+        RunLoop.current.add(timer, forMode: RunLoopMode.defaultRunLoopMode)
         return timer
     }
     
-    class func after(interval: NSTimeInterval, repeats: Bool, _ block: () -> ()) -> NSTimer {
-        let timer = NSTimer.new(after: interval, repeats: repeats, block)
-        NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSDefaultRunLoopMode)
+    class func after(_ interval: TimeInterval, repeats: Bool, _ block: @escaping () -> ()) -> Timer {
+        let timer = Timer.new(after: interval, repeats: repeats, block)
+        RunLoop.current.add(timer, forMode: RunLoopMode.defaultRunLoopMode)
         return timer
     }
 }

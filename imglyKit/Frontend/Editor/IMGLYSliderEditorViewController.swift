@@ -8,43 +8,43 @@
 
 import UIKit
 
-public class IMGLYSliderEditorViewController: IMGLYSubEditorViewController {
+open class IMGLYSliderEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Properties
     
-    public private(set) lazy var slider: UISlider = {
+    open fileprivate(set) lazy var slider: UISlider = {
        let slider = UISlider()
         slider.minimumValue = self.minimumValue
         slider.maximumValue = self.maximumValue
         slider.value = self.initialValue
-        slider.continuous = true
-        slider.addTarget(self, action: "sliderValueChanged:", forControlEvents: .ValueChanged)
-        slider.addTarget(self, action: "sliderTouchedUpInside:", forControlEvents: .TouchUpInside)
+        slider.isContinuous = true
+        slider.addTarget(self, action: #selector(IMGLYSliderEditorViewController.sliderValueChanged(_:)), for: .valueChanged)
+        slider.addTarget(self, action: #selector(IMGLYSliderEditorViewController.sliderTouchedUpInside(_:)), for: .touchUpInside)
         slider.translatesAutoresizingMaskIntoConstraints = false
         return slider
     }()
     
-    public var minimumValue: Float {
+    open var minimumValue: Float {
         // Subclasses should override this
         return -1
     }
     
-    public var maximumValue: Float {
+    open var maximumValue: Float {
         // Subclasses should override this
         return 1
     }
     
-    public var initialValue: Float {
+    open var initialValue: Float {
         // Subclasses should override this
         return 0
     }
     
-    private var changeTimer: NSTimer?
-    private var updateInterval: NSTimeInterval = 0.01
+    fileprivate var changeTimer: Timer?
+    fileprivate var updateInterval: TimeInterval = 0.01
     
     // MARK: - UIViewController
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         shouldShowActivityIndicator = false
@@ -53,31 +53,31 @@ public class IMGLYSliderEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - IMGLYEditorViewController
     
-    public override var enableZoomingInPreviewImage: Bool {
+    open override var enableZoomingInPreviewImage: Bool {
         return true
     }
     
     // MARK: - Configuration
     
-    private func configureViews() {
+    fileprivate func configureViews() {
         bottomContainerView.addSubview(slider)
         
         let views = ["slider" : slider]
         let metrics = ["margin" : 20]
         
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-(==margin)-[slider]-(==margin)-|", options: [], metrics: metrics, views: views))
-        bottomContainerView.addConstraint(NSLayoutConstraint(item: slider, attribute: .CenterY, relatedBy: .Equal, toItem: bottomContainerView, attribute: .CenterY, multiplier: 1, constant: 0))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(==margin)-[slider]-(==margin)-|", options: [], metrics: metrics, views: views))
+        bottomContainerView.addConstraint(NSLayoutConstraint(item: slider, attribute: .centerY, relatedBy: .equal, toItem: bottomContainerView, attribute: .centerY, multiplier: 1, constant: 0))
     }
     
     // MARK: - Actions
     
-    @objc private func sliderValueChanged(sender: UISlider?) {
+    @objc fileprivate func sliderValueChanged(_ sender: UISlider?) {
         if changeTimer == nil {
-            changeTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "update:", userInfo: nil, repeats: false)
+            changeTimer = Timer.scheduledTimer(timeInterval: updateInterval, target: self, selector: #selector(IMGLYSliderEditorViewController.update(_:)), userInfo: nil, repeats: false)
         }
     }
     
-    @objc private func sliderTouchedUpInside(sender: UISlider?) {
+    @objc fileprivate func sliderTouchedUpInside(_ sender: UISlider?) {
         changeTimer?.invalidate()
         
         valueChanged(slider.value)
@@ -86,7 +86,7 @@ public class IMGLYSliderEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    @objc private func update(timer: NSTimer) {
+    @objc fileprivate func update(_ timer: Timer) {
         valueChanged(slider.value)
         updatePreviewImageWithCompletion {
             self.changeTimer = nil
@@ -95,7 +95,7 @@ public class IMGLYSliderEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Subclasses
     
-    public func valueChanged(value: Float) {
+    open func valueChanged(_ value: Float) {
         // Subclasses should override this
     }
 

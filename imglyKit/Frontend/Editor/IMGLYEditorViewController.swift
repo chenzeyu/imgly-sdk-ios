@@ -8,18 +8,18 @@
 
 import UIKit
 
-internal let PhotoProcessorQueue = dispatch_queue_create("ly.img.SDK.PhotoProcessor", DISPATCH_QUEUE_SERIAL)
+internal let PhotoProcessorQueue = DispatchQueue(label: "ly.img.SDK.PhotoProcessor", attributes: [])
 
-public class IMGLYEditorViewController: UIViewController {
+open class IMGLYEditorViewController: UIViewController {
     
     // MARK: - Properties
     
-    public var shouldShowActivityIndicator = true
+    open var shouldShowActivityIndicator = true
     
-    public var updating = false {
+    open var updating = false {
         didSet {
             if shouldShowActivityIndicator {
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     if self.updating {
                         self.activityIndicatorView.startAnimating()
                     } else {
@@ -30,23 +30,23 @@ public class IMGLYEditorViewController: UIViewController {
         }
     }
     
-    public var lowResolutionImage: UIImage?
+    open var lowResolutionImage: UIImage?
     
-    public private(set) lazy var previewImageView: IMGLYZoomingImageView = {
+    open fileprivate(set) lazy var previewImageView: IMGLYZoomingImageView = {
         let imageView = IMGLYZoomingImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.userInteractionEnabled = self.enableZoomingInPreviewImage
+        imageView.isUserInteractionEnabled = self.enableZoomingInPreviewImage
         return imageView
         }()
     
-    public private(set) lazy var bottomContainerView: UIView = {
+    open fileprivate(set) lazy var bottomContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    private lazy var activityIndicatorView: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+    fileprivate lazy var activityIndicatorView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
         view.hidesWhenStopped = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -54,7 +54,7 @@ public class IMGLYEditorViewController: UIViewController {
     
     // MARK: - UIViewController
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
         self.navigationController?.setNavigationBarHidden(false, animated: false)
@@ -63,37 +63,37 @@ public class IMGLYEditorViewController: UIViewController {
         configureViewConstraints()
     }
     
-    public override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    open override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
     
-    public override func prefersStatusBarHidden() -> Bool {
+    open override var prefersStatusBarHidden : Bool {
         return true
     }
     
-    public override func shouldAutorotate() -> Bool {
+    open override var shouldAutorotate : Bool {
         return false
     }
     
-    public override func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
-        return .Portrait
+    open override var preferredInterfaceOrientationForPresentation : UIInterfaceOrientation {
+        return .portrait
     }
     
     // MARK: - Configuration
     
-    private func configureNavigationItems() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "tappedDone:")
+    fileprivate func configureNavigationItems() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(IMGLYEditorViewController.tappedDone(_:)))
     }
     
-    private func configureViewHierarchy() {
-        view.backgroundColor = UIColor.blackColor()
+    fileprivate func configureViewHierarchy() {
+        view.backgroundColor = UIColor.black
 
         view.addSubview(previewImageView)
         view.addSubview(bottomContainerView)
         previewImageView.addSubview(activityIndicatorView)
     }
     
-    private func configureViewConstraints() {
+    fileprivate func configureViewConstraints() {
         let views: [String: AnyObject] = [
             "previewImageView" : previewImageView,
             "bottomContainerView" : bottomContainerView,
@@ -101,25 +101,25 @@ public class IMGLYEditorViewController: UIViewController {
         ]
         
         let metrics: [String: AnyObject] = [
-            "bottomContainerViewHeight" : 100
+            "bottomContainerViewHeight" : 100 as AnyObject
         ]
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[previewImageView]|", options: [], metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[bottomContainerView]|", options: [], metrics: nil, views: views))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:[topLayoutGuide][previewImageView][bottomContainerView(==bottomContainerViewHeight)]|", options: [], metrics: metrics, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[previewImageView]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[bottomContainerView]|", options: [], metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[topLayoutGuide][previewImageView][bottomContainerView(==bottomContainerViewHeight)]|", options: [], metrics: metrics, views: views))
         
-        previewImageView.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute: .CenterX, relatedBy: .Equal, toItem: previewImageView, attribute: .CenterX, multiplier: 1, constant: 0))
-        previewImageView.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute: .CenterY, relatedBy: .Equal, toItem: previewImageView, attribute: .CenterY, multiplier: 1, constant: 0))
+        previewImageView.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute: .centerX, relatedBy: .equal, toItem: previewImageView, attribute: .centerX, multiplier: 1, constant: 0))
+        previewImageView.addConstraint(NSLayoutConstraint(item: activityIndicatorView, attribute: .centerY, relatedBy: .equal, toItem: previewImageView, attribute: .centerY, multiplier: 1, constant: 0))
     }
     
-    public var enableZoomingInPreviewImage: Bool {
+    open var enableZoomingInPreviewImage: Bool {
         // Subclasses should override this to enable zooming
         return false
     }
     
     // MARK: - Actions
     
-    public func tappedDone(sender: UIBarButtonItem?) {
+    open func tappedDone(_ sender: UIBarButtonItem?) {
         // Subclasses must override this
     }
     

@@ -8,40 +8,40 @@
 
 import UIKit
 
-public class IMGLYFilterEditorViewController: IMGLYSubEditorViewController {
+open class IMGLYFilterEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - Properties
     
-    public let filterSelectionController = IMGLYFilterSelectionController()
+    open let filterSelectionController = IMGLYFilterSelectionController()
     
-    public private(set) lazy var filterIntensitySlider: UISlider = {
-        let bundle = NSBundle(forClass: self.dynamicType)
+    open fileprivate(set) lazy var filterIntensitySlider: UISlider = {
+        let bundle = Bundle(for: type(of: self))
         let slider = UISlider()
         slider.translatesAutoresizingMaskIntoConstraints = false
         slider.minimumValue = 0
         slider.maximumValue = 1
         slider.value = 0.75
-        slider.addTarget(self, action: "changeIntensity:", forControlEvents: .ValueChanged)
-        slider.addTarget(self, action: "sliderTouchedUpInside:", forControlEvents: .TouchUpInside)
+        slider.addTarget(self, action: #selector(IMGLYFilterEditorViewController.changeIntensity(_:)), for: .valueChanged)
+        slider.addTarget(self, action: #selector(IMGLYFilterEditorViewController.sliderTouchedUpInside(_:)), for: .touchUpInside)
         
-        slider.minimumTrackTintColor = UIColor.whiteColor()
-        slider.maximumTrackTintColor = UIColor.whiteColor()
-        let sliderThumbImage = UIImage(named: "slider_thumb_image", inBundle: bundle, compatibleWithTraitCollection: nil)
-        slider.setThumbImage(sliderThumbImage, forState: .Normal)
-        slider.setThumbImage(sliderThumbImage, forState: .Highlighted)
+        slider.minimumTrackTintColor = UIColor.white
+        slider.maximumTrackTintColor = UIColor.white
+        let sliderThumbImage = UIImage(named: "slider_thumb_image", in: bundle, compatibleWith: nil)
+        slider.setThumbImage(sliderThumbImage, for: UIControlState())
+        slider.setThumbImage(sliderThumbImage, for: .highlighted)
         
         return slider
         }()
     
-    private var changeTimer: NSTimer?
-    private var updateInterval: NSTimeInterval = 0.01
+    fileprivate var changeTimer: Timer?
+    fileprivate var updateInterval: TimeInterval = 0.01
     
     // MARK: - UIViewController
     
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
         
-        let bundle = NSBundle(forClass: self.dynamicType)
+        let bundle = Bundle(for: type(of: self))
         navigationItem.title = NSLocalizedString("filter-editor.title", tableName: nil, bundle: bundle, value: "", comment: "")
         
         configureFilterSelectionController()
@@ -50,31 +50,31 @@ public class IMGLYFilterEditorViewController: IMGLYSubEditorViewController {
     
     // MARK: - IMGLYEditorViewController
     
-    public override var enableZoomingInPreviewImage: Bool {
+    open override var enableZoomingInPreviewImage: Bool {
         return true
     }
     
     // MARK: - Configuration
     
-    private func configureFilterSelectionController() {
+    fileprivate func configureFilterSelectionController() {
         filterSelectionController.selectedBlock = { [weak self] filterType in
-            if filterType == .None {
-                if let filterIntensitySlider = self?.filterIntensitySlider where filterIntensitySlider.alpha > 0 {
-                    UIView.animateWithDuration(0.3) {
+            if filterType == .none {
+                if let filterIntensitySlider = self?.filterIntensitySlider, filterIntensitySlider.alpha > 0 {
+                    UIView.animate(withDuration: 0.3, animations: {
                         filterIntensitySlider.alpha = 0
-                    }
+                    }) 
                 }
             } else {
-                if let filterIntensitySlider = self?.filterIntensitySlider where filterIntensitySlider.alpha < 1 {
-                    UIView.animateWithDuration(0.3) {
+                if let filterIntensitySlider = self?.filterIntensitySlider, filterIntensitySlider.alpha < 1 {
+                    UIView.animate(withDuration: 0.3, animations: {
                         filterIntensitySlider.alpha = 1
-                    }
+                    }) 
                 }
             }
             
-            if let fixedFilterStack = self?.fixedFilterStack where filterType != fixedFilterStack.effectFilter.filterType {
+            if let fixedFilterStack = self?.fixedFilterStack, filterType != fixedFilterStack.effectFilter.filterType {
                 fixedFilterStack.effectFilter = IMGLYInstanceFactory.effectFilterWithType(filterType)
-                fixedFilterStack.effectFilter.inputIntensity = InitialFilterIntensity
+                fixedFilterStack.effectFilter.inputIntensity = NSNumber.init(floatLiteral: Double(InitialFilterIntensity))
                 self?.filterIntensitySlider.value = InitialFilterIntensity
             }
             
@@ -89,18 +89,18 @@ public class IMGLYFilterEditorViewController: IMGLYSubEditorViewController {
             return nil
         }
         
-        let views = [ "filterSelectionView" : filterSelectionController.view ]
+        let views:[String:UIView] = ["filterSelectionView" : filterSelectionController.view]
         
         addChildViewController(filterSelectionController)
-        filterSelectionController.didMoveToParentViewController(self)
+        filterSelectionController.didMove(toParentViewController: self)
         bottomContainerView.addSubview(filterSelectionController.view)
         
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[filterSelectionView]|", options: [], metrics: nil, views: views))
-        bottomContainerView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[filterSelectionView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[filterSelectionView]|", options: [], metrics: nil, views: views))
+        bottomContainerView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[filterSelectionView]|", options: [], metrics: nil, views: views))
     }
     
-    private func configureFilterIntensitySlider() {
-        if fixedFilterStack.effectFilter.filterType == .None {
+    fileprivate func configureFilterIntensitySlider() {
+        if fixedFilterStack.effectFilter.filterType == .none {
             filterIntensitySlider.alpha = 0
         } else {
             filterIntensitySlider.value = fixedFilterStack.effectFilter.inputIntensity.floatValue
@@ -114,25 +114,25 @@ public class IMGLYFilterEditorViewController: IMGLYSubEditorViewController {
         ]
         
         let metrics: [String : AnyObject] = [
-            "filterIntensitySliderLeftRightMargin" : 10
+            "filterIntensitySliderLeftRightMargin" : 10 as AnyObject
         ]
         
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|-(==filterIntensitySliderLeftRightMargin)-[filterIntensitySlider]-(==filterIntensitySliderLeftRightMargin)-|", options: [], metrics: metrics, views: views))
-        view.addConstraint(NSLayoutConstraint(item: filterIntensitySlider, attribute: .Bottom, relatedBy: .Equal, toItem: previewImageView, attribute: .Bottom, multiplier: 1, constant: -20))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|-(==filterIntensitySliderLeftRightMargin)-[filterIntensitySlider]-(==filterIntensitySliderLeftRightMargin)-|", options: [], metrics: metrics, views: views))
+        view.addConstraint(NSLayoutConstraint(item: filterIntensitySlider, attribute: .bottom, relatedBy: .equal, toItem: previewImageView, attribute: .bottom, multiplier: 1, constant: -20))
     }
     
     // MARK: - Callbacks
     
-    @objc private func changeIntensity(sender: UISlider?) {
+    @objc fileprivate func changeIntensity(_ sender: UISlider?) {
         if changeTimer == nil {
-            changeTimer = NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: "update:", userInfo: nil, repeats: false)
+            changeTimer = Timer.scheduledTimer(timeInterval: updateInterval, target: self, selector: #selector(IMGLYFilterEditorViewController.update(_:)), userInfo: nil, repeats: false)
         }
     }
     
-    @objc private func sliderTouchedUpInside(sender: UISlider?) {
+    @objc fileprivate func sliderTouchedUpInside(_ sender: UISlider?) {
         changeTimer?.invalidate()
         
-        fixedFilterStack.effectFilter.inputIntensity = filterIntensitySlider.value
+        fixedFilterStack.effectFilter.inputIntensity = NSNumber.init(floatLiteral: Double(filterIntensitySlider.value))
         shouldShowActivityIndicator = false
         updatePreviewImageWithCompletion {
             self.changeTimer = nil
@@ -140,8 +140,8 @@ public class IMGLYFilterEditorViewController: IMGLYSubEditorViewController {
         }
     }
     
-    @objc private func update(timer: NSTimer) {
-        fixedFilterStack.effectFilter.inputIntensity = filterIntensitySlider.value
+    @objc fileprivate func update(_ timer: Timer) {
+        fixedFilterStack.effectFilter.inputIntensity = NSNumber.init(floatLiteral: Double(filterIntensitySlider.value))
         shouldShowActivityIndicator = false
         updatePreviewImageWithCompletion {
             self.changeTimer = nil

@@ -9,15 +9,15 @@
 import UIKit
 
 public protocol IMGLYFontSelectorViewDelegate: class {
-    func fontSelectorView(fontSelectorView: IMGLYFontSelectorView, didSelectFontWithName fontName: String)
+    func fontSelectorView(_ fontSelectorView: IMGLYFontSelectorView, didSelectFontWithName fontName: String)
 }
 
-public class IMGLYFontSelectorView: UIScrollView {
-    public weak var selectorDelegate: IMGLYFontSelectorViewDelegate?
+open class IMGLYFontSelectorView: UIScrollView {
+    open weak var selectorDelegate: IMGLYFontSelectorViewDelegate?
     
-    private let kDistanceBetweenButtons = CGFloat(60)
-    private let kFontSize = CGFloat(28)
-    private var fontNames = [String]()
+    fileprivate let kDistanceBetweenButtons = CGFloat(60)
+    fileprivate let kFontSize = CGFloat(28)
+    fileprivate var fontNames = [String]()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -29,39 +29,39 @@ public class IMGLYFontSelectorView: UIScrollView {
         commonInit()
     }
     
-    private func commonInit() {       
+    fileprivate func commonInit() {       
         fontNames = IMGLYInstanceFactory.availableFontsList
         configureFontButtons()
     }
     
-    private func configureFontButtons() {
+    fileprivate func configureFontButtons() {
         for fontName in fontNames {
-            let button = UIButton(type: UIButtonType.Custom)
-            button.setTitle(fontName, forState:UIControlState.Normal)
-            button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+            let button = UIButton(type: UIButtonType.custom)
+            button.setTitle(fontName, for:UIControlState())
+            button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.center
             
             if let font = UIFont(name: fontName, size: kFontSize) {
                 button.titleLabel?.font = font
                 addSubview(button)
-                button.addTarget(self, action: "buttonTouchedUpInside:", forControlEvents: UIControlEvents.TouchUpInside)
+                button.addTarget(self, action: #selector(IMGLYFontSelectorView.buttonTouchedUpInside(_:)), for: UIControlEvents.touchUpInside)
             }
         }
     }
-    public override func layoutSubviews() {
+    open override func layoutSubviews() {
         super.layoutSubviews()
         
-        for var index = 0; index < subviews.count; index++ {
+        for index in 0 ..< subviews.count {
             if let button = subviews[index] as? UIButton {
-                button.frame = CGRectMake(0,
-                    CGFloat(index) * kDistanceBetweenButtons,
-                    frame.size.width,
-                    kDistanceBetweenButtons)
+                button.frame = CGRect(x: 0,
+                    y: CGFloat(index) * kDistanceBetweenButtons,
+                    width: frame.size.width,
+                    height: kDistanceBetweenButtons)
             }
         }
-        contentSize = CGSizeMake(frame.size.width - 1.0, kDistanceBetweenButtons * CGFloat(subviews.count - 2))
+        contentSize = CGSize(width: frame.size.width - 1.0, height: kDistanceBetweenButtons * CGFloat(subviews.count - 2))
     }
     
-    @objc private func buttonTouchedUpInside(button: UIButton) {
+    @objc fileprivate func buttonTouchedUpInside(_ button: UIButton) {
         selectorDelegate?.fontSelectorView(self, didSelectFontWithName: button.titleLabel!.text!)
     }
  }

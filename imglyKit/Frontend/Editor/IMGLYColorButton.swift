@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-public class IMGLYColorButton : UIButton {
-    public var hasFrame = false {
+open class IMGLYColorButton : UIButton {
+    open var hasFrame = false {
         didSet {
             styleButton()
         }
@@ -26,16 +26,16 @@ public class IMGLYColorButton : UIButton {
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         styleButton()
     }
     
-    private func styleButton() {
-        selected = false
+    fileprivate func styleButton() {
+        isSelected = false
         layer.cornerRadius = 3
         layer.masksToBounds = true
         layer.borderWidth = 1.0 / contentScaleFactor
         let alpha = hasFrame ? 0.3 : 0.0
-        layer.borderColor = UIColor(white: 1.0, alpha: CGFloat(alpha)).CGColor
+        layer.borderColor = UIColor(white: 1.0, alpha: CGFloat(alpha)).cgColor
     }
 }

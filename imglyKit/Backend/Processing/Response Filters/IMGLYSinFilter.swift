@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYSinFilter: IMGLYResponseFilter {
+open class IMGLYSinFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "Sin")
         self.imgly_displayName = "Sin"
@@ -18,9 +18,9 @@ public class IMGLYSinFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.Sin
+            return IMGLYFilterType.sin
         }
     }
 }

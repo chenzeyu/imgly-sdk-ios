@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYCelsiusFilter: IMGLYResponseFilter {
+open class IMGLYCelsiusFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "Celsius")
         self.imgly_displayName = "Celsius"
@@ -18,9 +18,9 @@ public class IMGLYCelsiusFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.Celsius
+            return IMGLYFilterType.celsius
         }
     }
 }

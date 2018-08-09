@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYHighContrastFilter: IMGLYResponseFilter {
+open class IMGLYHighContrastFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "HighContrast")
         self.imgly_displayName = "Hicon"
@@ -18,9 +18,9 @@ public class IMGLYHighContrastFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.HighContrast
+            return IMGLYFilterType.highContrast
         }
     }
 }

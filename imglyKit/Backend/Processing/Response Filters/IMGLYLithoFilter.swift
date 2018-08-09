@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYLithoFilter: IMGLYResponseFilter {
+open class IMGLYLithoFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "Litho")
         self.imgly_displayName = "Litho"
@@ -18,9 +18,9 @@ public class IMGLYLithoFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.Litho
+            return IMGLYFilterType.litho
         }
     }
 }

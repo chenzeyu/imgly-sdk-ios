@@ -14,7 +14,7 @@ class IMGLYStickerCollectionViewCell: UICollectionViewCell {
     
     lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.contentMode = .ScaleAspectFit
+        imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
         }()
@@ -31,27 +31,27 @@ class IMGLYStickerCollectionViewCell: UICollectionViewCell {
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         configureViews()
     }
     
     // MARK: - Helpers
     
-    private func configureViews() {
+    fileprivate func configureViews() {
         contentView.addSubview(imageView)
         
         let views = [
             "imageView" : imageView,
         ]
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-            "|[imageView]|",
+        contentView.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "|[imageView]|",
             options: [],
             metrics: nil,
             views: views))
         
-        contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat(
-            "V:|[imageView]|",
+        contentView.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "V:|[imageView]|",
             options: [],
             metrics: nil,
             views: views))

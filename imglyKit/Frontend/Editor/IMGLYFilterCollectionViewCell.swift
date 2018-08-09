@@ -22,9 +22,9 @@ class IMGLYFilterCollectionViewCell: IMGLYImageCaptionCollectionViewCell {
     lazy var tickImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .Center
+        imageView.contentMode = .center
         imageView.alpha = 0
-        imageView.image = UIImage(named: "icon_tick", inBundle: NSBundle(forClass: self.dynamicType), compatibleWithTraitCollection:nil)
+        imageView.image = UIImage(named: "icon_tick", in: Bundle(for: type(of: self)), compatibleWith:nil)
         return imageView
     }()
     
@@ -40,7 +40,7 @@ class IMGLYFilterCollectionViewCell: IMGLYImageCaptionCollectionViewCell {
         commonInit()
     }
     
-    private func commonInit() {
+    fileprivate func commonInit() {
         configureViews()
     }
     
@@ -57,7 +57,7 @@ class IMGLYFilterCollectionViewCell: IMGLYImageCaptionCollectionViewCell {
     
     // MARK: - Helpers
     
-    private func configureViews() {
+    fileprivate func configureViews() {
         imageView.addSubview(activityIndicator)
         imageView.addSubview(tickImageView)
         
@@ -65,11 +65,11 @@ class IMGLYFilterCollectionViewCell: IMGLYImageCaptionCollectionViewCell {
             "tickImageView" : tickImageView
         ]
         
-        imageView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("|[tickImageView]|", options: [], metrics: nil, views: views))
-        imageView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[tickImageView]|", options: [], metrics: nil, views: views))
+        imageView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "|[tickImageView]|", options: [], metrics: nil, views: views))
+        imageView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[tickImageView]|", options: [], metrics: nil, views: views))
         
-        imageView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: imageView, attribute: .CenterX, multiplier: 1, constant: 0))
-        imageView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: imageView, attribute: .CenterY, multiplier: 1, constant: 0))
+        imageView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .centerX, relatedBy: .equal, toItem: imageView, attribute: .centerX, multiplier: 1, constant: 0))
+        imageView.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .centerY, relatedBy: .equal, toItem: imageView, attribute: .centerY, multiplier: 1, constant: 0))
     }
     
     // MARK: - ImageCaptionCollectionViewCell

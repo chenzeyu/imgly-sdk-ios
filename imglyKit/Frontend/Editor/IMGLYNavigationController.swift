@@ -8,16 +8,16 @@
 
 import UIKit
 
-public class IMGLYNavigationController: UINavigationController {
+open class IMGLYNavigationController: UINavigationController {
 
     // MARK: - UIViewController
     
-    override public func shouldAutorotate() -> Bool {
+    override open var shouldAutorotate : Bool {
         return false
     }
     
-    override public func preferredInterfaceOrientationForPresentation() -> UIInterfaceOrientation {
-        return .Portrait
+    override open var preferredInterfaceOrientationForPresentation : UIInterfaceOrientation {
+        return .portrait
     }
 
 }

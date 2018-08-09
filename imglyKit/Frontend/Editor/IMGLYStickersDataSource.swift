@@ -12,8 +12,8 @@ public protocol IMGLYStickersDataSourceDelegate: class, UICollectionViewDataSour
     var stickers: [IMGLYSticker] { get }
 }
 
-public class IMGLYStickersDataSource: NSObject, IMGLYStickersDataSourceDelegate {
-    public let stickers: [IMGLYSticker]
+open class IMGLYStickersDataSource: NSObject, IMGLYStickersDataSourceDelegate {
+    open let stickers: [IMGLYSticker]
     
     override init() {
         let stickerFiles = [
@@ -37,8 +37,8 @@ public class IMGLYStickersDataSource: NSObject, IMGLYStickersDataSourceDelegate 
         ]
         
         stickers = stickerFiles.map { (file: String) -> IMGLYSticker? in
-            if let image = UIImage(named: file, inBundle: NSBundle(forClass: IMGLYStickersDataSource.self), compatibleWithTraitCollection: nil) {
-                let thumbnail = UIImage(named: file + "_thumbnail", inBundle: NSBundle(forClass: IMGLYStickersDataSource.self), compatibleWithTraitCollection: nil)
+            if let image = UIImage(named: file, in: Bundle(for: IMGLYStickersDataSource.self), compatibleWith: nil) {
+                let thumbnail = UIImage(named: file + "_thumbnail", in: Bundle(for: IMGLYStickersDataSource.self), compatibleWith: nil)
                 return IMGLYSticker(image: image, thumbnail: thumbnail)
             }
             
@@ -53,16 +53,16 @@ public class IMGLYStickersDataSource: NSObject, IMGLYStickersDataSourceDelegate 
         super.init()
     }
     
-    public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    open func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
     
-    public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return stickers.count
     }
     
-    public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StickersCollectionViewCellReuseIdentifier, forIndexPath: indexPath) as! IMGLYStickerCollectionViewCell
+    open func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: StickersCollectionViewCellReuseIdentifier, for: indexPath) as! IMGLYStickerCollectionViewCell
         
         cell.imageView.image = stickers[indexPath.row].thumbnail ?? stickers[indexPath.row].image
         

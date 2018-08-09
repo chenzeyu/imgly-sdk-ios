@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYBleachedFilter: IMGLYResponseFilter {
+open class IMGLYBleachedFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "Bleached")
         self.imgly_displayName = "Bleached"
@@ -18,9 +18,9 @@ public class IMGLYBleachedFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.Bleached
+            return IMGLYFilterType.bleached
         }
     }
 }

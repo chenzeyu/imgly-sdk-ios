@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class IMGLYTexasFilter: IMGLYResponseFilter {
+open class IMGLYTexasFilter: IMGLYResponseFilter {
     init() {
         super.init(responseName: "Texas")
         self.imgly_displayName = "Texas"
@@ -18,9 +18,9 @@ public class IMGLYTexasFilter: IMGLYResponseFilter {
         super.init(coder: aDecoder)
     }
     
-    public override var filterType:IMGLYFilterType {
+    open override var filterType:IMGLYFilterType {
         get {
-            return IMGLYFilterType.Texas
+            return IMGLYFilterType.texas
         }
     }
 }
